@@ -9,10 +9,12 @@ This project adds motor control via bluetooth to a default Cam Jam EduKit Raspbe
 - Go Forward
 - Go Backward
 - Stop
-- Beep - You need to have an audio output card or pair a bluetooth device to your robot.  In my case, I paired a tiny, thumb-sized bluetooth speaker to the robot. 
-- Follow a sequence of preprogrammed commands - In this case a long sequence of commands is sent to the robot via Bluetooth, and the robot will interpret them one after the next. 
+- Execute a sequence of pre-programmed commands - In this case a long sequence of commands is sent to the robot via Bluetooth, and the robot will interpret them one after the next. 
 
-I presently have plans to add callbacks (eg. so that I can notify the Master of collision events). But like all good hobbies, I'll add that ... someday. Stay tuned.
+I presently have plans to add:
+
+- Callbacks (eg. so that I can notify the Master of collision events). But like all good hobbies, I'll add that ... someday. Stay tuned.
+- The ability to make some silly sounds, like old-school car honks.
 
 This project was created so that I can teach my daughter how to program using either Thunkable or MIT App Inventor.  The idea is to have her use Scratch from her tablet to program this robot. 
 

@@ -1,5 +1,6 @@
 import time
 
+
 class Brain:
     __doc__ = """ A simple brain to help manage the motors.
         The centerpiece for this class is the 'parse_string()'
@@ -21,7 +22,7 @@ class Brain:
         S - Stop
 
         """
-        
+
     def __init__(self, motors):
         self.motors = motors
         self.initialize()
@@ -30,58 +31,51 @@ class Brain:
         print("Initializing")
         self.motors.stop()
 
-    def pause(self, seconds:float):
+    def pause(self, seconds: float):
         time.sleep(seconds)
 
-
-    def parse_string(self, raw_string:str):
+    def parse_string(self, raw_string: str):
         # commands are of syntax: "[cmd1]:[seconds1],[cmd2]:[seconds2]"
         for command in raw_string.split(","):
             cmd_arg = command.split(":")
-            self.execute_command(cmd_arg[0],cmd_arg[1])
+            self.execute_command(cmd_arg[0], cmd_arg[1])
 
         # Just in case somebody forgets to stop.
         self.motors.stop()
 
-    parse_string.__doc__ = """Parses a comma separated raw string of commands.
-                                Commands are of syntax 'cmd:seconds' """
-        
-    def turn_right(self,seconds:float):
-        print("turning right for " + seconds + " s")
+    def turn_right(self, seconds: float):
         self.motors.turn_right()
         time.sleep(float(seconds))
 
-    def turn_left(self,seconds:float):
-        print("turning left for "+ seconds + " s")
+    def turn_left(self, seconds: float):
         self.motors.turn_left()
         time.sleep(float(seconds))
 
-    def stop(self,seconds:float):
-        print("stopping for "+ seconds + " s")
+    def stop(self, seconds: float):
         self.motors.stop()
         time.sleep(float(seconds))
 
-    def forward(self,seconds:float):
-        print("forward for "+ seconds + " s")
+    def forward(self, seconds: float):
         self.motors.forward()
         time.sleep(float(seconds))
 
-    def reverse(self,seconds:float):
-        print("reversing for "+ seconds + " s")
+    def reverse(self, seconds: float):
         self.motors.reverse()
         time.sleep(float(seconds))
 
-    def execute_command(self, cmd:str, seconds:float):   
-        if (cmd == 'R' or cmd == 'r'):
+    def execute_command(self, cmd: str, seconds: float):
+        if cmd == 'R' or cmd == 'r':
             self.turn_right(seconds)
-        elif (cmd == 'L' or cmd == 'l'):
+        elif cmd == 'L' or cmd == 'l':
             self.turn_left(seconds)
-        elif (cmd == 'F' or cmd == 'f'):
+        elif cmd == 'F' or cmd == 'f':
             self.forward(seconds)
-        elif (cmd == 'B' or cmd == 'b'):
+        elif cmd == 'B' or cmd == 'b':
             self.reverse(seconds)
-        elif (cmd == 'S' or cmd == 's'):
+        elif cmd == 'S' or cmd == 's':
             self.stop(seconds)
         else:
             print("Ignoring " + str(cmd) + " with seconds " + str(seconds))
 
+    parse_string.__doc__ = """Parses a comma separated raw string of commands.
+                                Commands are of syntax 'cmd:seconds' """
