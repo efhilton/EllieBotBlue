@@ -1,7 +1,7 @@
 import bluetooth
-import motors as m
 import brain as b
 
+IS_DEBUGGING = True
 
 class BluetoothSlave:
     BLUETOOTH_SLAVE_NAME = "BlueCamJam"
@@ -47,6 +47,11 @@ class BluetoothSlave:
 
 
 if __name__ == '__main__':
+
+    if IS_DEBUGGING:
+        import motors_mock as m
+    else:
+        import motors as m
 
     motors = m.Motors()
     brain = b.Brain(motors)
