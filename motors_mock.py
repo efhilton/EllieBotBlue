@@ -7,7 +7,7 @@ class Motors:
         self.stop()
 
     def stop(self):
-        print("stopping")
+        print("Stopping")
 
     def right_reverse(self):
         pass

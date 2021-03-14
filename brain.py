@@ -28,7 +28,6 @@ class Brain:
         self.initialize()
 
     def initialize(self):
-        print("Initializing")
         self.motors.stop()
 
     def pause(self, seconds: float):
@@ -36,6 +35,9 @@ class Brain:
 
     def parse_string(self, raw_string: str):
         # commands are of syntax: "[cmd1]:[seconds1],[cmd2]:[seconds2]"
+        if not raw_string:
+            return
+
         for command in raw_string.split(","):
             cmd_arg = command.split(":")
             self.execute_command(cmd_arg[0], cmd_arg[1])

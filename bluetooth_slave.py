@@ -1,7 +1,5 @@
 import bluetooth
-import brain as b
 
-IS_DEBUGGING = True
 
 class BluetoothSlave:
     BLUETOOTH_SLAVE_NAME = "BlueCamJam"
@@ -12,8 +10,8 @@ class BluetoothSlave:
         self.uuid = uuid
 
     def initialize(self):
-        print("Initializing...")
-        self.server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        print("BT: Initializing Bluetooth Slave")
+        self.server_socket = bluetooth.BluetoothSocket(bluetooth.L2CAP)
         self.server_socket.bind(("", bluetooth.PORT_ANY))
         self.server_socket.listen(1)
 
@@ -25,10 +23,10 @@ class BluetoothSlave:
 
     def run_service(self, callback=None):
         self.initialize()
-        print("Awaiting connections")
+        print("BT: Awaiting connections")
 
         client_sock, client_info = self.server_socket.accept()
-        print("Accepted connection from ", client_info)
+        print("BT: Accepted connection from ", client_info)
 
         while True:
             data = client_sock.recv(1024).decode()
@@ -44,22 +42,3 @@ class BluetoothSlave:
 
         client_sock.close()
         self.server_socket.close()
-
-
-if __name__ == '__main__':
-
-    if IS_DEBUGGING:
-        import motors_mock as m
-    else:
-        import motors as m
-
-    motors = m.Motors()
-    brain = b.Brain(motors)
-    slave = BluetoothSlave()
-
-    while True:
-        try:
-            slave.run_service(brain.parse_string)
-        except bluetooth.BluetoothError as e:
-            # ignore
-            print("Disconnected")
