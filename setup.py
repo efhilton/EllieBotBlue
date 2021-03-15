@@ -8,5 +8,5 @@ setup(
     license='MIT',
     author='Edgar Hilton',
     author_email='edgar.hilton@gmail.com',
-    description='A Bluetooth Enabled CamJam EduKit'
+    description='A Bluetooth Enabled CamJam EduKit', requires=['flask,flask_classful']
 )

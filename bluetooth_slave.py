@@ -22,23 +22,27 @@ class BluetoothSlave:
         )
 
     def run_service(self, callback=None):
-        self.initialize()
-        print("BT: Awaiting connections")
-
-        client_sock, client_info = self.server_socket.accept()
-        print("BT: Accepted connection from ", client_info)
-
         while True:
-            data = client_sock.recv(1024).decode()
-            if not data:
-                # if data is not received break
-                break
-            print("received [%s]" % data)
-            if callback != None:
-                callback(data)
+            try:
+                self.initialize()
+                print("BT: Awaiting connections")
 
-            # As of now there's no need to send any data back.
-            # client_sock.send("ACK".encode(encoding="utf-8"))
+                client_sock, client_info = self.server_socket.accept()
+                print("BT: Accepted connection from ", client_info)
 
-        client_sock.close()
-        self.server_socket.close()
+                while True:
+                    data = client_sock.recv(1024).decode()
+                    if not data:
+                        # if data is not received break
+                        break
+                    print("received [%s]" % data)
+                    if callback != None:
+                        callback(data)
+
+                    # As of now there's no need to send any data back.
+                    # client_sock.send("ACK".encode(encoding="utf-8"))
+
+                client_sock.close()
+                self.server_socket.close()
+            except bluetooth.BluetoothError:
+                print("Disconnected. Resetting")

@@ -1,18 +1,21 @@
 from brain import Brain
-from bluetooth_slave import BluetoothSlave
-import bluetooth
 import sys
 
-IS_DEBUGGING = False
+USE_MOTORS = True
+REMOTE_MODE = "Rest"
 
 if __name__ == '__main__':
     for p in sys.argv:
-        if p == '--DEBUG':
-            IS_DEBUGGING = True
-            break
+        if p == '--MOTORS':
+            USE_MOTORS = True
+        if p == '--NO_MOTORS':
+            USE_MOTORS = False
+        if p == '--SERIAL':
+            REMOTE_MODE = 'Serial'
+        if p == '--REST':
+            REMOTE_MODE = 'Rest'
 
-    if IS_DEBUGGING:
-        print("Running in Debug Mode")
+    if not USE_MOTORS:
         print("Motors Disabled")
         from motors_mock import Motors
     else:
@@ -21,11 +24,16 @@ if __name__ == '__main__':
 
     motors = Motors()
     brain = Brain(motors)
-    slave = BluetoothSlave()
 
-    while True:
-        try:
-            slave.run_service(brain.parse_string)
-        except bluetooth.BluetoothError as e:
-            # ignore
-            print("Disconnected")
+    if REMOTE_MODE == 'Serial':
+        print("Using BLUETOOTH")
+        from bluetooth_slave import BluetoothSlave
+        slave = BluetoothSlave()
+        slave.run_service(brain.parse_string)
+    else:
+        print("Using REST")
+        from restful import RobotView
+        from flask import Flask
+        app = Flask(__name__)
+        RobotView.register(app,init_argument=brain)
+        app.run()

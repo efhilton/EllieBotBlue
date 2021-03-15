@@ -1,5 +1,7 @@
 import time
 
+MAX_DURATION = 10.0
+
 
 class Brain:
     __doc__ = """ A simple brain to help manage the motors.
@@ -30,8 +32,12 @@ class Brain:
     def initialize(self):
         self.motors.stop()
 
-    def pause(self, seconds: float):
-        time.sleep(seconds)
+    def wait(self, seconds: float = None):
+        if seconds and seconds > 0.0:
+            if seconds > MAX_DURATION:
+                time.sleep(MAX_DURATION)
+            else:
+                time.sleep(seconds)
 
     def parse_string(self, raw_string: str):
         # commands are of syntax: "[cmd1]:[seconds1],[cmd2]:[seconds2]"
@@ -40,42 +46,44 @@ class Brain:
 
         for command in raw_string.split(","):
             cmd_arg = command.split(":")
-            self.execute_command(cmd_arg[0], cmd_arg[1])
+            self.execute_command(cmd_arg[0], float(cmd_arg[1]))
 
         # Just in case somebody forgets to stop.
         self.motors.stop()
 
-    def turn_right(self, seconds: float):
+    def turn_right(self):
         self.motors.turn_right()
-        time.sleep(float(seconds))
 
-    def turn_left(self, seconds: float):
+    def turn_left(self):
         self.motors.turn_left()
-        time.sleep(float(seconds))
 
-    def stop(self, seconds: float):
+    def stop(self):
         self.motors.stop()
-        time.sleep(float(seconds))
 
-    def forward(self, seconds: float):
+    def forward(self):
         self.motors.forward()
-        time.sleep(float(seconds))
 
-    def reverse(self, seconds: float):
+    def reverse(self):
         self.motors.reverse()
-        time.sleep(float(seconds))
 
-    def execute_command(self, cmd: str, seconds: float):
-        if cmd == 'R' or cmd == 'r':
-            self.turn_right(seconds)
-        elif cmd == 'L' or cmd == 'l':
-            self.turn_left(seconds)
-        elif cmd == 'F' or cmd == 'f':
-            self.forward(seconds)
-        elif cmd == 'B' or cmd == 'b':
-            self.reverse(seconds)
-        elif cmd == 'S' or cmd == 's':
-            self.stop(seconds)
+    def execute_command(self, command: str, seconds: float = None):
+        cmd = command.upper()
+        if cmd == 'RIGHT' or cmd == 'R':
+            self.turn_right()
+            self.wait(seconds)
+        elif cmd == 'LEFT' or cmd == 'L':
+            self.turn_left()
+            self.wait(seconds)
+        elif cmd == 'FORWARD' or cmd == 'F':
+            self.forward()
+            self.wait(seconds)
+        elif cmd == 'BACK' or cmd == 'B':
+            self.reverse()
+            self.wait(seconds)
+        elif cmd == 'STOP' or cmd == 'S':
+            self.stop()
+        elif cmd == 'WAIT' or cmd == 'W':
+            self.wait(seconds)
         else:
             print("Ignoring " + str(cmd) + " with seconds " + str(seconds))
 
