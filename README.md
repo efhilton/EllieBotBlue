@@ -11,7 +11,7 @@ The idea is to provide a mechanism via which a remote application (for example, 
 This project adds motor control via:
 
 - Bluetooth (as a bluetooth slave using Bluez)
-- RESTful
+- RESTful services
 - and Websockets (default)
 
 To a Cam Jam EduKit 3 Raspberry Pi robot kit.  Presently, it provides the ability to run the following:
@@ -26,7 +26,7 @@ To a Cam Jam EduKit 3 Raspberry Pi robot kit.  Presently, it provides the abilit
 
 This project was created so that I can teach my 10 yo daughter how to program on her tablet using either Thunkable or MIT App Inventor.  The idea is to have her use Scratch from her tablet to control this robot. 
 
-Note, as of now, this project only adds the ability to provide open loop control assertions to the robot.  I will be adding the ability to send back sensor signals via the websocket shortly, once I figure out how MIT App Inventor or Thunkable handle these.  I will be providing a link to a samplel MIT App Inventor project as soon as it is completed.
+Note, as of now, this project only adds the ability to provide open loop control assertions to the robot via RESTful services.  I will be adding the ability to send back sensor signals via the websocket shortly, once I figure out how MIT App Inventor or Thunkable handle these.  I will be providing a link to a sample Scratch project as soon as it is completed.
 
 ## License
 This project is governed by the MIT License. All rights reserved.
