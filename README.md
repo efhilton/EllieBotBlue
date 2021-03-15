@@ -38,4 +38,4 @@ The main author for this project is Edgar Hilton, edgar.hilton@gmail.com.
 Please don't hesitate to reach out to me, edgar.hilton@gmail.com if you have any questions, comments, or ideas on how to enhance this project.
 
 ## Buy Me Coffee?
-If you find this code useful, please think of buying me a cup of coffee (I like Starbucks!) by making a Paypal donation to [my Paypal](http://paypal.com.me/mighty2020).
+If you find this code useful, or if you want to feed my growing love of Raspberry Pi hardware, or if you want to buy me a cup of coffee (I like Starbucks!) as a way of saying thanks, then consider making a Paypal donation to [my Paypal](http://paypal.com.me/mighty2020).
