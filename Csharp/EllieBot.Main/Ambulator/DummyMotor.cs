@@ -6,14 +6,19 @@ namespace EllieBot.Ambulator
 {
     internal class DummyMotor : IMotor
     {
-        public string MotorName { get; set; }
+        public int _duty = 0;
+
+        public DummyMotor(string name)
+        {
+            this.MotorName = name;
+        }
+
         public int ActivePin { get; set; }
         public int BackwaurdPin { get; set; }
         public GpioController Controller { get; set; }
         public int ForwardPin { get; set; }
         public int InactivePin { get; set; }
-
-        public int _duty = 0;
+        public string MotorName { get; set; }
 
         public int TargetDutyCycle
         {
@@ -25,9 +30,9 @@ namespace EllieBot.Ambulator
             }
         }
 
-        public DummyMotor(string name)
+        public void Dispose()
         {
-            this.MotorName = name;
+            // do nothing
         }
 
         public void Init(GpioController controller)

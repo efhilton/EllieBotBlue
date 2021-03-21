@@ -15,14 +15,15 @@ namespace EllieBot
             IFileSystem fileSystem = new FileSystem();
             RobotConfig configs = RobotConfig.LoadFile(DEFAULT_CONFIG_FILE_NAME, fileSystem, Program.Logger).GetAwaiter().GetResult();
 
-            IMotor motorLeft = new RealMotor("Left", configs.LeftMotorForwardPin, configs.LeftMotorBackwardPin);
-            IMotor motorRight = new RealMotor("Right", configs.RightMotorForwardPin, configs.RightMotorBackwardPin);
-            IMotorsController motors = new MotorsController(motorLeft, motorRight);
+            IMotor motorLeft = new RealMotor("Left", configs.LeftMotorForwardPin, configs.LeftMotorBackwardPin, Program.Logger);
+            IMotor motorRight = new RealMotor("Right", configs.RightMotorForwardPin, configs.RightMotorBackwardPin, Program.Logger);
+            IMotorsController motors = new MotorsController(motorLeft, motorRight, Program.Logger);
             motors.Initialize();
 
             ICommandProcessor proc = new CommandProcessor(motors);
 
-            Robot p = new Robot(proc, configs);
+            Robot p = new Robot(proc, motors, configs);
+
             p.Initialize().Wait();
 
             RobotCommand rc = new RobotCommand

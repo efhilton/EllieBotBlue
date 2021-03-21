@@ -7,7 +7,7 @@ namespace EllieBot.Ambulator
 {
     public class MotorsController : IMotorsController, IDisposable
     {
-        private static int REFRESH_PERIOD_IN_MS = 2000;
+        private static int REFRESH_PERIOD_IN_MS = 50;
         private bool disposedValue = false;
         private Timer PwmCycleTimer = null;
         private bool IsRunningPwm = false;
@@ -16,14 +16,16 @@ namespace EllieBot.Ambulator
 
         private readonly IMotor LeftMotor;
         private readonly IMotor RightMotor;
+        private readonly Action<string> Logger;
 
-        public MotorsController(IMotor motorLeft, IMotor motorRight)
+        public MotorsController(IMotor motorLeft, IMotor motorRight, Action<string> logger = null)
         {
             LeftMotor = motorLeft;
             RightMotor = motorRight;
+            Logger = logger;
         }
 
-        void IMotorsController.SetDutyCycles(double leftValue, double rightValue)
+        public void SetDutyCycles(double leftValue, double rightValue)
         {
             LeftMotor.TargetDutyCycle = ScaleMotorInput(leftValue);
             RightMotor.TargetDutyCycle = ScaleMotorInput(rightValue);
@@ -36,7 +38,7 @@ namespace EllieBot.Ambulator
             return Convert.ToInt32(dutyCycle);
         }
 
-        Task IMotorsController.Initialize()
+        public Task Initialize()
         {
             try
             {
@@ -45,7 +47,7 @@ namespace EllieBot.Ambulator
             catch (NotSupportedException)
             {
                 this.Controller = null;
-                Console.Out.WriteLine("Motors disabled");
+                Logger?.Invoke("Motors disabled");
             }
             LeftMotor.Init(Controller);
             RightMotor.Init(Controller);
@@ -106,6 +108,8 @@ namespace EllieBot.Ambulator
                             LeftMotor.TurnOff();
                             RightMotor.TurnOff();
 
+                            LeftMotor.Dispose();
+                            RightMotor.Dispose();
                             Controller.Dispose();
 
                             Controller = null;
@@ -124,6 +128,17 @@ namespace EllieBot.Ambulator
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public void Execute(string[] commandArguments)
+        {
+            if (commandArguments.Length != 2)
+            {
+                return;
+            }
+            double leftDuty = double.Parse(commandArguments[0]);
+            double rightDuty = double.Parse(commandArguments[1]);
+            SetDutyCycles(leftDuty, rightDuty);
         }
     }
 }

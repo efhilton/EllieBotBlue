@@ -1,4 +1,5 @@
-﻿using EllieBot.Brain;
+﻿using EllieBot.Ambulator;
+using EllieBot.Brain;
 using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
@@ -13,16 +14,22 @@ namespace EllieBot
     {
         private Communications.NervousSystem comms;
         private readonly ICommandProcessor commandProcessor;
+        private readonly IMotorsController motorController;
         private readonly RobotConfig configs;
 
-        public Robot(ICommandProcessor cmdProcessor, RobotConfig configs)
+        public Robot(ICommandProcessor cmdProcessor,
+                     IMotorsController motorController,
+                     RobotConfig configs)
         {
             this.commandProcessor = cmdProcessor;
+            this.motorController = motorController;
             this.configs = configs;
         }
 
         public Task Initialize()
         {
+            this.commandProcessor.RegisterCommand("go", this.motorController);
+
             comms = new Communications.NervousSystem();
             comms.ConnectAsync(configs.BackboneServer, configs.BackbonePort).Wait();
 
