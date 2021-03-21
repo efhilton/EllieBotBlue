@@ -25,13 +25,13 @@ namespace EllieBot
                 {
                     callback?.Invoke($"Saving new config file to {fullPath}");
                     RobotConfig config = GetDefaultRobotConfig();
-                    config.SaveFile(fileName, fileSystem).Wait();
+                    config.SaveFile(fullPath, fileSystem).Wait();
                     return config;
                 }
                 else
                 {
                     callback?.Invoke($"Using existing config file in {fullPath}");
-                    string json = fileSystem.File.ReadAllText(fileName);
+                    string json = fileSystem.File.ReadAllText(fullPath);
                     return JsonConvert.DeserializeObject<RobotConfig>(json);
                 }
             });
