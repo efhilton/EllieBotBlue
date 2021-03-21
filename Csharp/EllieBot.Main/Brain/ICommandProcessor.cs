@@ -4,6 +4,6 @@ namespace EllieBot.Brain
 {
     public interface ICommandProcessor
     {
-        Task Execute(RobotCommand cmd);
+        void QueueExecute(RobotCommand cmd);
     }
 }

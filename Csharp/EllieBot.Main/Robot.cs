@@ -1,5 +1,4 @@
-﻿using EllieBot.NervousSystem;
-using EllieBot.Brain;
+﻿using EllieBot.Brain;
 using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
@@ -14,22 +13,25 @@ namespace EllieBot
     {
         private Communications.NervousSystem comms;
         private readonly ICommandProcessor commandProcessor;
+        private readonly RobotConfig configs;
 
-        public Robot(ICommandProcessor cmdProcessor)
+        public Robot(ICommandProcessor cmdProcessor, RobotConfig configs)
         {
             this.commandProcessor = cmdProcessor;
+            this.configs = configs;
         }
+
         public Task Initialize()
         {
             comms = new Communications.NervousSystem();
-            comms.ConnectAsync(Constants.SERVER_ADDRESS, Constants.SERVER_PORT).Wait();
+            comms.ConnectAsync(configs.BackboneServer, configs.BackbonePort).Wait();
 
-            return comms.SubscribeAsync(Constants.TOPIC_COMMAND, OnDataReceived, OnConnection, OnDisconnection);
+            return comms.SubscribeAsync(configs.TopicForCommands, OnDataReceived, OnConnection, OnDisconnection);
         }
 
         public Task PublishAsync(string message)
         {
-            return comms.PublishAsync(Constants.TOPIC_COMMAND, message);
+            return comms.PublishAsync(configs.TopicForCommands, message);
         }
 
         private Task OnDisconnection(MqttClientDisconnectedEventArgs arg)
@@ -58,9 +60,8 @@ namespace EllieBot
                  Console.WriteLine($"{arg.ApplicationMessage.Topic}: {Payload}");
 
                  RobotCommand cmd = JsonConvert.DeserializeObject<RobotCommand>(Payload);
-                 return commandProcessor.Execute(cmd);
+                 commandProcessor.QueueExecute(cmd);
              });
         }
-
     }
 }
