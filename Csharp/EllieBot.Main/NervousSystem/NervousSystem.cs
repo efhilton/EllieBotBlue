@@ -4,33 +4,23 @@ using MQTTnet;
 using MQTTnet.Client.Options;
 using MQTTnet.Extensions.ManagedClient;
 
-namespace EllieBot.NervousSystem
+namespace EllieBot.Communications
 {
-    public class CommunicationBroker
+    public class NervousSystem
     {
-        public static string COMMAND_TOPIC = "elliebot/commands";
-
+       
         public IManagedMqttClient Client { get; set; }
 
-        public async Task ConnectAsync()
+        public async Task ConnectAsync(string ipAddress, int port)
         {
             string clientId = Guid.NewGuid().ToString();
-            string mqttURI = "192.168.1.135";
-            //string mqttUser = "elliebot";
-            //string mqttPassword = "rocks3000";
-            int mqttPort = 1883;
-            bool mqttSecure = false;
-
 
             MqttClientOptionsBuilder messageBuilder = new MqttClientOptionsBuilder()
               .WithClientId(clientId)
-              // .WithCredentials(mqttUser, mqttPassword)
-              .WithTcpServer(mqttURI, mqttPort)
+              .WithTcpServer(ipAddress, port)
               .WithCleanSession();
 
-            IMqttClientOptions options = mqttSecure
-              ? messageBuilder                .WithTls()                .Build()
-              : messageBuilder                .Build();
+            IMqttClientOptions options = messageBuilder.Build();
 
             ManagedMqttClientOptions managedOptions = new ManagedMqttClientOptionsBuilder()
               .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))
@@ -52,8 +42,15 @@ namespace EllieBot.NervousSystem
                                          .Build());
         }
 
+        public Task SubscribeAsync(string topic,
+                                   Func<MqttApplicationMessageReceivedEventArgs, Task> receiveHandler,
+                                   Func<MQTTnet.Client.Connecting.MqttClientConnectedEventArgs, Task> connectedHandler,
+                                   Func<MQTTnet.Client.Disconnecting.MqttClientDisconnectedEventArgs, Task> disconnectedHandler)
+        {
+            Client.UseApplicationMessageReceivedHandler(receiveHandler)
+                .UseConnectedHandler(connectedHandler)
+                .UseDisconnectedHandler(disconnectedHandler);
+            return Client.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
+        }
     }
-
-
-
 }

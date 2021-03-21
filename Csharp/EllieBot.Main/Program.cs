@@ -1,14 +1,28 @@
-﻿using EllieBot.NervousSystem;
+﻿using EllieBot.Ambulator;
+using EllieBot.Brain;
+using Newtonsoft.Json;
+using System;
 
-namespace EllieBot.Main
+namespace EllieBot
 {
-    public class Program
+    class Program
     {
-        public static  void Main(string[] args)
+        public static void Main(string[] args)
         {
-            CommunicationBroker ns = new CommunicationBroker();
-             ns.ConnectAsync().Wait();
-             ns.PublishAsync(CommunicationBroker.COMMAND_TOPIC, "hello").Wait();
+            IMotors motors = new DummyMotors();
+            ICommandProcessor proc = new CommandProcessor(motors);
+
+            Robot p = new Robot(proc);
+            p.Initialize().Wait();
+
+            RobotCommand rc = new RobotCommand
+            {
+                Command = "go",
+                Arguments = new string[] { "-0.1", "0.2" }
+            };
+            string json = JsonConvert.SerializeObject(rc);
+            p.PublishAsync(json).Wait();
+            Console.ReadLine();
         }
     }
 }
