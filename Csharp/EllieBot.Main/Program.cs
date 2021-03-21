@@ -34,6 +34,8 @@ namespace EllieBot
 
             string json = JsonConvert.SerializeObject(rc);
             p.PublishAsync(json).Wait();
+
+            Console.WriteLine("Robot is Running. Press any key to Exit");
             Console.ReadLine();
         }
 

@@ -45,8 +45,7 @@ namespace EllieBot
         {
             return Task.Run(() =>
             {
-                Console.WriteLine($"ClientConnected = {arg.ClientWasConnected}");
-                Console.WriteLine($"Reason = {arg.Reason}");
+                Console.WriteLine("Client Disconnected");
             });
         }
 
@@ -54,8 +53,7 @@ namespace EllieBot
         {
             return Task.Run(() =>
             {
-                Console.WriteLine($"AuthData = {arg.AuthenticateResult.AuthenticationData}");
-                Console.WriteLine($"AuthMethod = {arg.AuthenticateResult.AuthenticationMethod}");
+                Console.WriteLine("Client Connected");
             });
         }
 
@@ -63,11 +61,14 @@ namespace EllieBot
         {
             return Task.Run(() =>
              {
-                 string Payload = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
-                 Console.WriteLine($"{arg.ApplicationMessage.Topic}: {Payload}");
-
-                 RobotCommand cmd = JsonConvert.DeserializeObject<RobotCommand>(Payload);
-                 commandProcessor.QueueExecute(cmd);
+                string Payload = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
+                try { 
+                    RobotCommand cmd = JsonConvert.DeserializeObject<RobotCommand>(Payload);
+                    commandProcessor.QueueExecute(cmd);
+                } 
+                catch (Exception)
+                {
+                    Console.WriteLine($"Ignored: {Payload}");
              });
         }
     }

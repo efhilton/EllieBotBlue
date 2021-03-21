@@ -9,10 +9,10 @@ namespace EllieBot
     {
         public int BackbonePort { get; set; } = EllieBot.NervousSystem.Constants.DEFAULT_COMMUNICATIONS_PORT;
         public string BackboneServer { get; set; } = EllieBot.NervousSystem.Constants.DEFAULT_COMMUNICATIONS_ADDRESS;
-        public int LeftMotorBackwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_BACKWARD_PIN_RIGHT;
-        public int LeftMotorForwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_FORWARD_PIN_RIGHT;
-        public int RightMotorBackwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_BACKWARD_PIN_LEFT;
-        public int RightMotorForwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_FORWARD_PIN_LEFT;
+        public int LeftMotorBackwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_BACKWARD_PIN_LEFT;
+        public int LeftMotorForwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_FORWARD_PIN_LEFT;
+        public int RightMotorBackwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_BACKWARD_PIN_RIGHT;
+        public int RightMotorForwardPin { get; internal set; } = EllieBot.Ambulator.Constants.DEFAULT_FORWARD_PIN_RIGHT;
         public string TopicForCommands { get; set; } = EllieBot.NervousSystem.Constants.DEFAULT_TOPIC_FOR_COMMANDS;
 
         internal static Task<RobotConfig> LoadFile(string fileName, IFileSystem fileSystem, System.Action<string> callback = null)
