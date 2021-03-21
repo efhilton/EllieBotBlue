@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.15" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="mono_crash.12ecaa89f.0.json" />
+    <None Remove="mono_crash.mem.31720.1.blob" />
+  </ItemGroup>
+</Project>
