@@ -69,6 +69,7 @@ namespace EllieBot
                 catch (Exception)
                 {
                     Console.WriteLine($"Ignored: {Payload}");
+                }
              });
         }
     }
