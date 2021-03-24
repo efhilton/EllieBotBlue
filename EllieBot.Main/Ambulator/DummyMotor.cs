@@ -22,11 +22,11 @@ namespace EllieBot.Ambulator
 
         public int TargetDutyCycle
         {
-            get => _duty;
+            get => this._duty;
             set
             {
                 this._duty = value;
-                Console.Out.WriteLine($"{MotorName} Motor Duty Cycle set to {_duty}");
+                Console.Out.WriteLine($"{this.MotorName} Motor Duty Cycle set to {this._duty}");
             }
         }
 
@@ -37,26 +37,26 @@ namespace EllieBot.Ambulator
 
         public void Init(GpioController controller)
         {
-            Console.Out.WriteLine($"{MotorName} Motor initialized");
+            Console.Out.WriteLine($"{this.MotorName} Motor initialized");
         }
 
         public void TurnOff()
         {
-            Console.Out.WriteLine($"{MotorName} Motor off");
+            Console.Out.WriteLine($"{this.MotorName} Motor off");
         }
 
         public void TurnOn()
         {
-            Console.Out.WriteLine($"{MotorName} Motor On");
+            Console.Out.WriteLine($"{this.MotorName} Motor On");
         }
 
         public Task TurnOnDelayOff(int delayInMs)
         {
-            TurnOn();
+            this.TurnOn();
 
             return Task.Delay(delayInMs).ContinueWith(x =>
             {
-                TurnOff();
+                this.TurnOff();
             });
         }
     }

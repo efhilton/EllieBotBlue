@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-
-namespace EllieBot.Brain
+﻿namespace EllieBot.Brain
 {
     public interface ICommandProcessor
     {
-        void RegisterCommand(string key, ICommandExecutor executor);
+        void RegisterCommand(ICommandExecutor executor);
 
         void QueueExecute(RobotCommand cmd);
     }

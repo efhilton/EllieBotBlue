@@ -1,9 +1,8 @@
-﻿using EllieBot.Brain;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace EllieBot.Ambulator
 {
-    public interface IMotorsController : ICommandExecutor
+    public interface IMotorsController
     {
         void SetDutyCycles(double leftValueNegOneToOne, double rightValueNegOneToOne);
 

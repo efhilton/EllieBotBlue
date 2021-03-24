@@ -1,14 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using MQTTnet;
+﻿using MQTTnet;
 using MQTTnet.Client.Options;
 using MQTTnet.Extensions.ManagedClient;
+using System;
+using System.Threading.Tasks;
 
 namespace EllieBot.Communications
 {
     public class NervousSystem
     {
-       
+
         public IManagedMqttClient Client { get; set; }
 
         public async Task ConnectAsync(string ipAddress, int port)
@@ -27,14 +27,14 @@ namespace EllieBot.Communications
               .WithClientOptions(options)
               .Build();
 
-            Client = new MqttFactory().CreateManagedMqttClient();
+            this.Client = new MqttFactory().CreateManagedMqttClient();
 
-            await Client.StartAsync(managedOptions);
+            await this.Client.StartAsync(managedOptions);
         }
 
         public Task PublishAsync(string topic, string payload, bool retainFlag = true, int qos = 1)
         {
-            return Client.PublishAsync(new MqttApplicationMessageBuilder()
+            return this.Client.PublishAsync(new MqttApplicationMessageBuilder()
                                          .WithTopic(topic)
                                          .WithPayload(payload)
                                          .WithQualityOfServiceLevel((MQTTnet.Protocol.MqttQualityOfServiceLevel)qos)
@@ -47,10 +47,10 @@ namespace EllieBot.Communications
                                    Func<MQTTnet.Client.Connecting.MqttClientConnectedEventArgs, Task> connectedHandler,
                                    Func<MQTTnet.Client.Disconnecting.MqttClientDisconnectedEventArgs, Task> disconnectedHandler)
         {
-            Client.UseApplicationMessageReceivedHandler(receiveHandler)
+            this.Client.UseApplicationMessageReceivedHandler(receiveHandler)
                 .UseConnectedHandler(connectedHandler)
                 .UseDisconnectedHandler(disconnectedHandler);
-            return Client.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
+            return this.Client.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
         }
     }
 }

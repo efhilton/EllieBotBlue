@@ -22,7 +22,7 @@ namespace EllieBot.Ambulator.Tests
         [TestCase(-0.01, 0)]
         public void TestScaleMotorInput(double input, int expected)
         {
-            Assert.That(MotorsController.ScaleMotorInput(input), Is.EqualTo(expected));
+            Assert.That(RawMotorsController.ScaleMotorInput(input), Is.EqualTo(expected));
         }
     }
 }

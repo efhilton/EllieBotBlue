@@ -28,87 +28,87 @@ namespace EllieBot.Ambulator
 
         public void Init(GpioController ctl)
         {
-            TargetDutyCycle = 0;
+            this.TargetDutyCycle = 0;
 
-            Controller = ctl;
-            if (Controller != null)
+            this.Controller = ctl;
+            if (this.Controller != null)
             {
-                Controller.OpenPin(ForwardPin, PinMode.Output);
-                Controller.OpenPin(BackwaurdPin, PinMode.Output);
-                TurnOff();
+                this.Controller.OpenPin(this.ForwardPin, PinMode.Output);
+                this.Controller.OpenPin(this.BackwaurdPin, PinMode.Output);
+                this.TurnOff();
             }
         }
 
         public void SetDirection()
         {
-            if (TargetDutyCycle >= 0)
+            if (this.TargetDutyCycle >= 0)
             {
-                ActivePin = ForwardPin;
-                InactivePin = BackwaurdPin;
+                this.ActivePin = this.ForwardPin;
+                this.InactivePin = this.BackwaurdPin;
             }
             else
             {
-                ActivePin = BackwaurdPin;
-                InactivePin = ForwardPin;
+                this.ActivePin = this.BackwaurdPin;
+                this.InactivePin = this.ForwardPin;
             }
         }
 
         public void TurnOff()
         {
-            if (Controller == null)
+            if (this.Controller == null)
             {
-                Logger?.Invoke($"{MotorName} Motor Off");
+                this.Logger?.Invoke($"{this.MotorName} Motor Off");
                 return;
             }
-            SetDirection();
-            Controller.Write(ActivePin, PinValue.Low);
-            Controller.Write(InactivePin, PinValue.Low);
+            this.SetDirection();
+            this.Controller.Write(this.ActivePin, PinValue.Low);
+            this.Controller.Write(this.InactivePin, PinValue.Low);
         }
 
         public void TurnOn()
         {
-            if (Controller == null)
+            if (this.Controller == null)
             {
-                Logger?.Invoke($"{MotorName} Motor On");
+                this.Logger?.Invoke($"{this.MotorName} Motor On");
                 return;
             }
-            SetDirection();
-            Controller.Write(ActivePin, PinValue.High);
-            Controller.Write(InactivePin, PinValue.Low);
+            this.SetDirection();
+            this.Controller.Write(this.ActivePin, PinValue.High);
+            this.Controller.Write(this.InactivePin, PinValue.Low);
         }
 
         public Task TurnOnDelayOff(int delayInMs)
         {
-            TurnOn();
+            this.TurnOn();
 
             return Task.Delay(delayInMs).ContinueWith((_) =>
            {
-               TurnOff();
+               this.TurnOff();
            });
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!this.disposedValue)
             {
                 if (disposing)
                 {
                     if (this.Controller != null)
                     {
-                        TurnOff();
-                        Controller.ClosePin(ForwardPin);
-                        Controller.ClosePin(BackwaurdPin);
+                        this.TurnOff();
+                        this.Controller.ClosePin(this.ForwardPin);
+                        this.Controller.ClosePin(this.BackwaurdPin);
                     }
                 }
 
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
+            this.Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
     }

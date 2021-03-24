@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EllieBot", "EllieBot.Main\EllieBot.csproj", "{F8FCD9B2-1A1A-4EE8-B82E-E24E5D3CB4DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EllieBotTests", "EllieBotTests\EllieBotTests.csproj", "{62CBCA87-5A15-4786-8DA2-5939CB12D6B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EllieBotTests", "EllieBotTests\EllieBotTests.csproj", "{62CBCA87-5A15-4786-8DA2-5939CB12D6B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99C71442-79E4-4AB4-ADEC-2CB83FA0C2CE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		global.json = global.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
