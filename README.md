@@ -1,4 +1,4 @@
-# EllieBot
+# EllieBotBlue
 This project gives the CamJam EduKit 3 (or any other Raspberry Pi enabled robot) the ability to communicate with a remote application via an MQTT broker.  
 
 ## Introduction
