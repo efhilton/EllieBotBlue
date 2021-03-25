@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
-using Unity;
 
 namespace EllieBot {
 
@@ -12,9 +11,6 @@ namespace EllieBot {
         private static readonly string DEFAULT_CONFIG_FILE_NAME = "robot_config.json";
 
         public static void Main(string[] args) {
-            UnityContainer container = new UnityContainer();
-            container.RegisterType<IMotorsController>("RawMotorsController");
-
             IFileSystem fileSystem = new FileSystem();
             RobotConfig configs = RobotConfig.LoadFile(DEFAULT_CONFIG_FILE_NAME, fileSystem, Logger).GetAwaiter().GetResult();
 
@@ -36,7 +32,7 @@ namespace EllieBot {
 
         private static Task SendStopCommand(Robot p) {
             RobotCommand rc = new RobotCommand {
-                Command = "go",
+                Command = "GO_RAW",
                 Arguments = new string[] { "0.0", "0.0" }
             };
 
