@@ -4,7 +4,7 @@ This project gives the CamJam EduKit 3 (or any other Raspberry Pi enabled robot)
 ## Introduction
 This project allows the control of a Cam Jam EduKit 3 through an MQTT message broker. 
 
-This project was created so that I can teach my 10 yo daughter how to program on her tablet using either Thunkable or MIT App Inventor.  The idea is to have her use Scratch from her tablet to control this robot. 
+This project was created so that I can teach kids how to program on their tablet using either Thunkable or MIT App Inventor.  The idea is to have them use Scratch from tehir tablet to control their robot 
 
 ## Setting Up Your Robot
 
