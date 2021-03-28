@@ -3,28 +3,30 @@ using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace EllieBot {
+namespace EllieBot.Configs {
 
-    public class HBridgeMotorDescription {
-        public string UniqueId { get; set; }
-        public int ForwardPin { get; set; }
-        public int BackwardPin { get; set; }
-    }
-
-    public class LedDescription {
-        public string UniqueId { get; set; }
-        public int PinNumber { get; set; }
+    public class MqttConnectionDescription {
+        public int Port { get; set; }
+        public string Host { get; set; }
+        public string TopicForCommands { get; set; }
+        public string TopicForLogging { get; set; }
     }
 
     public class RobotConfig {
-        public int MqttPort { get; set; } = Defaults.Mqtt.PORT;
-        public string MqttServer { get; set; } = Defaults.Mqtt.HOST;
-        public string MqttTopicForCommands { get; set; } = Defaults.Mqtt.TOPIC_FOR_COMMANDS;
-        public string MqttTopicForLogs { get; set; } = Defaults.Mqtt.TOPIC_FOR_LOGS;
-        public string LeftMotorUniqueId { get; set; } = Defaults.ComponentIds.LEFT_MOTOR;
-        public string RightMotorUniqueId { get; set; } = Defaults.ComponentIds.RIGHT_MOTOR;
 
-        public HBridgeMotorDescription[] HBridgeMotorDescriptions = new HBridgeMotorDescription[] {
+        public MqttConnectionDescription MqttDefinitions = new MqttConnectionDescription {
+            Port = Defaults.Mqtt.PORT,
+            Host = Defaults.Mqtt.HOST,
+            TopicForCommands = Defaults.Mqtt.TOPIC_FOR_COMMANDS,
+            TopicForLogging = Defaults.Mqtt.TOPIC_FOR_LOGGING
+        };
+
+        public DriveTrainDescription DriveTrainDefinitions = new DriveTrainDescription {
+            LeftMotorUniqueId = Defaults.ComponentIds.LEFT_MOTOR,
+            RightMotorUniqueId = Defaults.ComponentIds.RIGHT_MOTOR
+        };
+
+        public HBridgeMotorDescription[] HBridgeMotorDefinitions = new HBridgeMotorDescription[] {
             new HBridgeMotorDescription {
                 UniqueId = Defaults.ComponentIds.LEFT_MOTOR,
                 ForwardPin = Defaults.PinNums.MOTOR_FORWARD_LEFT,
@@ -37,7 +39,7 @@ namespace EllieBot {
             }
         };
 
-        public LedDescription[] LedDescriptions = new LedDescription[] {
+        public LedDescription[] LedDefinitions = new LedDescription[] {
             new LedDescription {
                 UniqueId = Defaults.ComponentIds.HEAD_LIGHTS,
                 PinNumber = Defaults.PinNums.HEAD_LIGHTS

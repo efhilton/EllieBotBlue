@@ -1,5 +1,6 @@
 ﻿using EllieBot.Brain;
 using EllieBot.Brain.Commands;
+using EllieBot.Configs;
 using EllieBot.IO;
 using EllieBot.IO.Devices;
 using Newtonsoft.Json;
@@ -30,20 +31,23 @@ namespace EllieBot {
 
             ICommandProcessor commandProcessor = new CommandProcessor(logger);
 
-            if (configs.HBridgeMotorDescriptions != null && configs.HBridgeMotorDescriptions.Length > 0) {
+            if (configs.HBridgeMotorDefinitions != null && configs.HBridgeMotorDefinitions.Length > 0) {
                 List<IPWMDevice> motors = new List<IPWMDevice>();
-                foreach (HBridgeMotorDescription h in configs.HBridgeMotorDescriptions) {
+                foreach (HBridgeMotorDescription h in configs.HBridgeMotorDefinitions) {
                     IPWMDevice motor = new HBridgeMotor(h.UniqueId, h.ForwardPin, h.BackwardPin, logger);
                     motors.Add(motor);
                 }
                 IPWMController pwmController = PwmController.CreateInstance(controller, motors, logger);
-                commandProcessor.RegisterCommand(new DriveMotorControl(configs.LeftMotorUniqueId, configs.RightMotorUniqueId, pwmController, logger));
+                commandProcessor.RegisterCommand(new DriveMotorControl(configs.DriveTrainDefinitions.LeftMotorUniqueId,
+                                                                       configs.DriveTrainDefinitions.RightMotorUniqueId,
+                                                                       pwmController,
+                                                                       logger));
                 commandProcessor.RegisterCommand(new SetPwmControl(pwmController, logger));
             }
 
-            if (configs.LedDescriptions != null && configs.LedDescriptions.Length > 0) {
+            if (configs.LedDefinitions != null && configs.LedDefinitions.Length > 0) {
                 List<IBlinkable> leds = new List<IBlinkable>();
-                foreach (LedDescription l in configs.LedDescriptions) {
+                foreach (LedDescription l in configs.LedDefinitions) {
                     LED led = new LED(l.UniqueId, l.PinNumber, logger);
                     leds.Add(led);
                 }
@@ -68,8 +72,6 @@ namespace EllieBot {
             return p.PublishAsync(json);
         }
 
-        private static void Logger(string msg) {
-            Console.Out.WriteLine(msg);
-        }
+        private static void Logger(string msg) => Console.Out.WriteLine(msg);
     }
 }

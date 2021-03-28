@@ -4,13 +4,6 @@ using System;
 namespace EllieBot.Brain.Commands {
 
     internal class DriveMotorControl : ICommandExecutor {
-        private const string BACKWARD = "go.back";
-        private const string FORWARD = "go.forward";
-        private const string LEFT = "go.left";
-        private const string RIGHT = "go.right";
-        private const string STOP = "go.stop";
-        private const string TANK = "go.tank";
-
         private readonly Action<string> Logger;
         private readonly string leftMotorId;
         private readonly string rightMotorId;
@@ -22,7 +15,7 @@ namespace EllieBot.Brain.Commands {
             this.Motors = motorsController;
         }
 
-        public string[] Commands => new string[] { LEFT, RIGHT, FORWARD, BACKWARD, STOP, TANK };
+        public string[] Commands => new string[] { Defaults.Commands.Go.LEFT, Defaults.Commands.Go.RIGHT, Defaults.Commands.Go.FORWARD, Defaults.Commands.Go.BACKWARD, Defaults.Commands.Go.STOP, Defaults.Commands.Go.TANK };
         public IPWMController Motors { get; }
 
         public void Execute(CommandPacket command) {
@@ -36,7 +29,7 @@ namespace EllieBot.Brain.Commands {
             double rightDuty = 0;
             double effort;
             switch (command.Command.Trim().ToLower()) {
-                case FORWARD:
+                case Defaults.Commands.Go.FORWARD:
                     if (command.Arguments.Length != 1) {
                         throw new ArgumentException("Expected 1 argument");
                     }
@@ -45,7 +38,7 @@ namespace EllieBot.Brain.Commands {
                     rightDuty = Math.Abs(effort);
                     break;
 
-                case BACKWARD:
+                case Defaults.Commands.Go.BACKWARD:
                     if (command.Arguments.Length != 1) {
                         throw new ArgumentException("Expected 1 argument");
                     }
@@ -54,7 +47,7 @@ namespace EllieBot.Brain.Commands {
                     rightDuty = -Math.Abs(effort);
                     break;
 
-                case LEFT:
+                case Defaults.Commands.Go.LEFT:
                     if (command.Arguments.Length != 1) {
                         throw new ArgumentException("Expected 1 argument");
                     }
@@ -63,7 +56,7 @@ namespace EllieBot.Brain.Commands {
                     rightDuty = Math.Abs(effort);
                     break;
 
-                case RIGHT:
+                case Defaults.Commands.Go.RIGHT:
                     if (command.Arguments.Length != 1) {
                         throw new ArgumentException("Expected 1 argument");
                     }
@@ -72,7 +65,7 @@ namespace EllieBot.Brain.Commands {
                     rightDuty = -Math.Abs(effort);
                     break;
 
-                case TANK:
+                case Defaults.Commands.Go.TANK:
                     if (command.Arguments.Length != 2) {
                         throw new ArgumentException("Expected 2 arguments");
                     }
@@ -82,7 +75,7 @@ namespace EllieBot.Brain.Commands {
                     rightDuty = forwardSpeed + antiClockwiseSpin;
                     break;
 
-                case STOP:
+                case Defaults.Commands.Go.STOP:
                 default:
                     leftDuty = 0;
                     rightDuty = 0;

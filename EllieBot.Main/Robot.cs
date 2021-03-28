@@ -1,4 +1,5 @@
 ﻿using EllieBot.Brain;
+using EllieBot.Configs;
 using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
@@ -27,9 +28,9 @@ namespace EllieBot {
 
         public Task Initialize() {
             this.comms = new Communications.NervousSystem();
-            this.comms.ConnectAsync(this.configs.MqttServer, this.configs.MqttPort).Wait();
+            this.comms.ConnectAsync(this.configs.MqttDefinitions.Host, this.configs.MqttDefinitions.Port).Wait();
 
-            return this.comms.SubscribeAsync(this.configs.MqttTopicForCommands, this.OnDataReceived, this.OnConnection, this.OnDisconnection);
+            return this.comms.SubscribeAsync(this.configs.MqttDefinitions.TopicForCommands, this.OnDataReceived, this.OnConnection, this.OnDisconnection);
         }
 
         internal static Robot CreateInstance(ICommandProcessor proc, RobotConfig configs, Action<string> logger = null) {
@@ -40,7 +41,7 @@ namespace EllieBot {
             return Instance;
         }
 
-        public Task PublishAsync(string message) => this.comms.PublishAsync(this.configs.MqttTopicForCommands, message);
+        public Task PublishAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForCommands, message);
 
         private Task OnDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger?.Invoke("Client Disconnected"));
 

@@ -5,8 +5,6 @@ using System.Collections.Generic;
 namespace EllieBot.Brain.Commands {
 
     internal class SetLedControl : ICommandExecutor {
-        private const string ON = "led.on";
-        private const string OFF = "led.off";
         private readonly Dictionary<string, IBlinkable> Blinkables;
         private readonly Action<string> Logger;
 
@@ -25,7 +23,7 @@ namespace EllieBot.Brain.Commands {
             }
         }
 
-        public string[] Commands => new string[] { ON, OFF };
+        public string[] Commands => new string[] { Defaults.Commands.Led.ON, Defaults.Commands.Led.OFF };
 
         public void Execute(CommandPacket command) {
             if (string.IsNullOrWhiteSpace(command.Command) || command.Arguments == null || command.Arguments.Length != 1) {
@@ -38,7 +36,7 @@ namespace EllieBot.Brain.Commands {
             }
 
             this.Blinkables.TryGetValue(deviceId.ToLower().Trim(), out IBlinkable device);
-            if (command.Command.Trim().Equals(ON, StringComparison.OrdinalIgnoreCase)) {
+            if (command.Command.Trim().Equals(Defaults.Commands.Led.ON, StringComparison.OrdinalIgnoreCase)) {
                 device.TurnOn();
             } else {
                 device.TurnOff();

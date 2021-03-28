@@ -106,23 +106,16 @@ namespace EllieBot.IO {
 
             Task t;
             double absDutyCycle = Math.Abs(motor.TargetDutyCycle);
-            if (absDutyCycle > 90) {
-                t = Task.Run(() => motor.TurnOn());
-            } else if (absDutyCycle < 10) {
-                t = Task.Run(() => motor.TurnOff());
-            } else {
-                t = TurnOnThenOffAfterDelay(delayInMs, motor);
-            }
-
+            t = absDutyCycle > 90
+                ? Task.Run(() => motor.TurnOn())
+                : absDutyCycle < 10 ? Task.Run(() => motor.TurnOff()) : TurnOnThenOffAfterDelay(delayInMs, motor);
             return t;
         }
 
         private static Task TurnOnThenOffAfterDelay(int delayInMs, IPWMDevice device) {
             device.TurnOn();
 
-            return Task.Delay(delayInMs).ContinueWith((_) => {
-                device.TurnOff();
-            });
+            return Task.Delay(delayInMs).ContinueWith((_) => device.TurnOff());
         }
 
         private void RunOnePwmCycle(object ignored) {

@@ -4,8 +4,7 @@ using System;
 namespace EllieBot.Brain.Commands {
 
     internal class SetPwmControl : ICommandExecutor {
-        private const string SET_PWM = "set.pwm";
-        public string[] Commands => new string[] { SET_PWM };
+        public string[] Commands => new string[] { Defaults.Commands.Pwm.SET_PWM };
 
         private readonly IPWMController PwmController;
         private readonly Action<string> Logger;
