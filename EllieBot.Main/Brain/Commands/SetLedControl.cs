@@ -10,7 +10,7 @@ namespace EllieBot.Brain.Commands {
         private readonly Dictionary<string, IBlinkable> Blinkables;
         private readonly Action<string> Logger;
 
-        public SetLedControl(IBlinkable[] blinkables, Action<string> logger = null) {
+        public SetLedControl(IEnumerable<IBlinkable> blinkables, Action<string> logger = null) {
             this.Logger = logger;
             this.Blinkables = new Dictionary<string, IBlinkable>();
             if (blinkables == null) {
@@ -18,7 +18,7 @@ namespace EllieBot.Brain.Commands {
             }
             foreach (IBlinkable b in blinkables) {
                 if (!string.IsNullOrWhiteSpace(b.UniqueId)) {
-                    string id = b.UniqueId.Trim().ToUpper();
+                    string id = b.UniqueId.Trim().ToLower();
                     this.Blinkables.Add(id, b);
                     this.Logger?.Invoke($"Registered LED: {id}");
                 }
@@ -27,7 +27,7 @@ namespace EllieBot.Brain.Commands {
 
         public string[] Commands => new string[] { ON, OFF };
 
-        public void Execute(RobotCommand command) {
+        public void Execute(CommandPacket command) {
             if (string.IsNullOrWhiteSpace(command.Command) || command.Arguments == null || command.Arguments.Length != 1) {
                 return;
             }
@@ -37,7 +37,7 @@ namespace EllieBot.Brain.Commands {
                 return;
             }
 
-            this.Blinkables.TryGetValue(deviceId.ToUpper().Trim(), out IBlinkable device);
+            this.Blinkables.TryGetValue(deviceId.ToLower().Trim(), out IBlinkable device);
             if (command.Command.Trim().Equals(ON, StringComparison.OrdinalIgnoreCase)) {
                 device.TurnOn();
             } else {

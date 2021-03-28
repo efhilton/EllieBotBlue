@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 namespace EllieBot.IO {
 
     public class PwmController : IPWMController, IDisposable {
-        private static readonly int REFRESH_PERIOD_IN_MS = 50;
-        private static readonly int START_DELAY_IN_MS = 2000;
+        private static readonly int REFRESH_PERIOD_IN_MS = 50; // 20 seconds
+        private static readonly int START_DELAY_IN_MS = 5000;
         private GpioController Controller;
+
         private readonly Dictionary<string, IPWMDevice> Devices;
         private readonly Task[] Tasks;
         private readonly Action<string> Logger;
@@ -24,8 +25,9 @@ namespace EllieBot.IO {
             this.Devices = new Dictionary<string, IPWMDevice>();
 
             foreach (IPWMDevice device in devices) {
-                this.Devices.Add(device.UniqueId.Trim().ToUpper(), device);
-                this.Logger?.Invoke($"Registered PWM device: {device.UniqueId}");
+                string deviceId = device.UniqueId.Trim().ToLower();
+                this.Devices.Add(deviceId, device);
+                this.Logger?.Invoke($"Registered PWM device: {deviceId}");
             }
 
             this.Tasks = new Task[this.Devices.Keys.Count];
@@ -38,7 +40,7 @@ namespace EllieBot.IO {
             return Convert.ToInt32(dutyCycle);
         }
 
-        internal static IPWMController CreateInstance(GpioController controller, IPWMDevice[] iPWMDevices, Action<string> logger) {
+        internal static IPWMController CreateInstance(GpioController controller, IEnumerable<IPWMDevice> iPWMDevices, Action<string> logger) {
             if (Instance != null) {
                 return Instance;
             }
@@ -69,7 +71,7 @@ namespace EllieBot.IO {
                 return;
             }
             int cleansedDutyCycle = ScaleMotorInput(value);
-            this.Devices.TryGetValue(deviceName.Trim().ToUpper(), out IPWMDevice device);
+            this.Devices.TryGetValue(deviceName.Trim().ToLower(), out IPWMDevice device);
             if (device != null) {
                 device.TargetDutyCycle = cleansedDutyCycle;
             }

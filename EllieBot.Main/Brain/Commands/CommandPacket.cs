@@ -1,6 +1,6 @@
 ﻿namespace EllieBot.Brain
 {
-    public class RobotCommand
+    public class CommandPacket
     {
         public string Command { get; set; }
         public string[] Arguments { get; set; }

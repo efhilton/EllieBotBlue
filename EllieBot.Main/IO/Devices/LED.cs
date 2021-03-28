@@ -9,13 +9,16 @@ namespace EllieBot.IO.Devices {
         private GpioController Controller;
         private bool disposedValue;
 
-        public LED(int headlightsPin, Action<string> logger = null) {
+        public string UniqueId { get; internal set; }
+
+        public LED(string uniqueId, int headlightsPin, Action<string> logger = null) {
+            if (string.IsNullOrWhiteSpace(uniqueId)) {
+                throw new ArgumentException("Unique ID cannot be null");
+            }
+            this.UniqueId = uniqueId.Trim();
             this.Pin = headlightsPin;
             this.Logger = logger;
         }
-
-        public string UniqueId { get; internal set; }
-        string IBlinkable.UniqueId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void Init(GpioController controller) {
             this.Controller = controller;

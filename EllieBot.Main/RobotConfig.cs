@@ -5,16 +5,52 @@ using System.Threading.Tasks;
 
 namespace EllieBot {
 
+    public class HBridgeMotorDescription {
+        public string UniqueId { get; set; }
+        public int ForwardPin { get; set; }
+        public int BackwardPin { get; set; }
+    }
+
+    public class LedDescription {
+        public string UniqueId { get; set; }
+        public int PinNumber { get; set; }
+    }
+
     public class RobotConfig {
-        public int BackbonePort { get; set; } = Constants.DEFAULT_COMMUNICATIONS_PORT;
-        public string BackboneServer { get; set; } = Constants.DEFAULT_COMMUNICATIONS_ADDRESS;
-        public int LeftMotorBackwardPin { get; internal set; } = Constants.DEFAULT_BACKWARD_PIN_LEFT;
-        public int LeftMotorForwardPin { get; internal set; } = Constants.DEFAULT_FORWARD_PIN_LEFT;
-        public int RightMotorBackwardPin { get; internal set; } = Constants.DEFAULT_BACKWARD_PIN_RIGHT;
-        public int RightMotorForwardPin { get; internal set; } = Constants.DEFAULT_FORWARD_PIN_RIGHT;
-        public int HeadlightsPin { get; internal set; } = Constants.DEFAULT_HEADLIGHTS_PIN;
-        public string TopicForCommands { get; set; } = Constants.DEFAULT_TOPIC_FOR_COMMANDS;
-        public string TopicForLogs { get; set; } = Constants.DEFAULT_TOPIC_FOR_LOGS;
+        public int MqttPort { get; set; } = Defaults.Mqtt.PORT;
+        public string MqttServer { get; set; } = Defaults.Mqtt.HOST;
+        public string MqttTopicForCommands { get; set; } = Defaults.Mqtt.TOPIC_FOR_COMMANDS;
+        public string MqttTopicForLogs { get; set; } = Defaults.Mqtt.TOPIC_FOR_LOGS;
+        public string LeftMotorUniqueId { get; set; } = Defaults.ComponentIds.LEFT_MOTOR;
+        public string RightMotorUniqueId { get; set; } = Defaults.ComponentIds.RIGHT_MOTOR;
+
+        public HBridgeMotorDescription[] HBridgeMotorDescriptions = new HBridgeMotorDescription[] {
+            new HBridgeMotorDescription {
+                UniqueId = Defaults.ComponentIds.LEFT_MOTOR,
+                ForwardPin = Defaults.PinNums.MOTOR_FORWARD_LEFT,
+                BackwardPin = Defaults.PinNums.MOTOR_BACKWARD_LEFT
+            },
+            new HBridgeMotorDescription {
+                UniqueId = Defaults.ComponentIds.RIGHT_MOTOR,
+                ForwardPin = Defaults.PinNums.MOTOR_FORWARD_RIGHT,
+                BackwardPin = Defaults.PinNums.MOTOR_BACKWARD_LEFT
+            }
+        };
+
+        public LedDescription[] LedDescriptions = new LedDescription[] {
+            new LedDescription {
+                UniqueId = Defaults.ComponentIds.HEAD_LIGHTS,
+                PinNumber = Defaults.PinNums.HEAD_LIGHTS
+            },
+            new LedDescription {
+                UniqueId = Defaults.ComponentIds.BRAKE_LIGHTS,
+                PinNumber = Defaults.PinNums.BRAKE_LIGHTS
+            },
+            new LedDescription {
+                UniqueId = Defaults.ComponentIds.OTHER_LIGHTS,
+                PinNumber = Defaults.PinNums.OTHER_LIGHTS
+            }
+        };
 
         internal static Task<RobotConfig> LoadFile(string fileName, IFileSystem fileSystem, System.Action<string> callback = null) {
             return Task.Run(() => {

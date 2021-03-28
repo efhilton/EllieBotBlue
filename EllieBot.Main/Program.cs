@@ -7,6 +7,7 @@ using System.IO.Abstractions;
 using System.Threading.Tasks;
 using EllieBot.IO.Devices;
 using EllieBot.Brain.Commands;
+using System.Collections.Generic;
 
 namespace EllieBot {
 
@@ -25,18 +26,29 @@ namespace EllieBot {
             }
 
             IFileSystem fileSystem = new FileSystem();
-            RobotConfig configs = RobotConfig.LoadFile(Constants.DEFAULT_CONFIG_FILE_NAME, fileSystem, logger).GetAwaiter().GetResult();
+            RobotConfig configs = RobotConfig.LoadFile(Defaults.Internal.CONFIG_FILE_NAME, fileSystem, logger).GetAwaiter().GetResult();
 
-            IBlinkable headlights = new LED(configs.HeadlightsPin, logger);
-            IPWMDevice motorLeft = new RealMotor(Constants.LEFT_MOTOR_ID, configs.LeftMotorForwardPin, configs.LeftMotorBackwardPin, logger);
-            IPWMDevice motorRight = new RealMotor(Constants.RIGHT_MOTOR_ID, configs.RightMotorForwardPin, configs.RightMotorBackwardPin, logger);
+            ICommandProcessor commandProcessor = new CommandProcessor(logger);
 
-            IPWMController pwmController = PwmController.CreateInstance(controller, new IPWMDevice[] { motorLeft, motorRight }, logger);
+            if (configs.HBridgeMotorDescriptions != null && configs.HBridgeMotorDescriptions.Length > 0) {
+                List<IPWMDevice> motors = new List<IPWMDevice>();
+                foreach (HBridgeMotorDescription h in configs.HBridgeMotorDescriptions) {
+                    IPWMDevice motor = new HBridgeMotor(h.UniqueId, h.ForwardPin, h.BackwardPin, logger);
+                    motors.Add(motor);
+                }
+                IPWMController pwmController = PwmController.CreateInstance(controller, motors, logger);
+                commandProcessor.RegisterCommand(new DriveMotorControl(configs.LeftMotorUniqueId, configs.RightMotorUniqueId, pwmController, logger));
+                commandProcessor.RegisterCommand(new SetPwmControl(pwmController, logger));
+            }
 
-            ICommandProcessor commandProcessor = new CommandProcessor();
-            commandProcessor.RegisterCommand(new DriveMotorControl(pwmController));
-            commandProcessor.RegisterCommand(new SetPwmControl(pwmController));
-            commandProcessor.RegisterCommand(new SetLedControl(new IBlinkable[] { headlights }));
+            if (configs.LedDescriptions != null && configs.LedDescriptions.Length > 0) {
+                List<IBlinkable> leds = new List<IBlinkable>();
+                foreach (LedDescription l in configs.LedDescriptions) {
+                    LED led = new LED(l.UniqueId, l.PinNumber, logger);
+                    leds.Add(led);
+                }
+                commandProcessor.RegisterCommand(new SetLedControl(leds, logger));
+            }
 
             Robot robot = Robot.CreateInstance(commandProcessor, configs, logger);
             robot.Initialize().Wait();
@@ -47,8 +59,8 @@ namespace EllieBot {
         }
 
         private static Task SendStopCommand(Robot p) {
-            RobotCommand rc = new RobotCommand {
-                Command = "GO_RAW",
+            CommandPacket rc = new CommandPacket {
+                Command = "go.tank",
                 Arguments = new string[] { "0.0", "0.0" }
             };
 

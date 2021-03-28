@@ -4,6 +4,6 @@
     {
         void RegisterCommand(ICommandExecutor executor);
 
-        void QueueExecute(RobotCommand cmd);
+        void QueueExecute(CommandPacket cmd);
     }
 }

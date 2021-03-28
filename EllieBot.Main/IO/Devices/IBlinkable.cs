@@ -7,7 +7,7 @@ namespace EllieBot.IO.Devices {
     /// This models any device that can be turned on or off.
     /// </summary>
     public interface IBlinkable : IDisposable {
-        string UniqueId { get; set; }
+        string UniqueId { get; }
 
         void Init(GpioController controller);
 

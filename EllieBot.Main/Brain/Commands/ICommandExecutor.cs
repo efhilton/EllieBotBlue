@@ -3,6 +3,6 @@
     public interface ICommandExecutor {
         string[] Commands { get; }
 
-        void Execute(RobotCommand command);
+        void Execute(CommandPacket command);
     }
 }

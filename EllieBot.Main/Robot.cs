@@ -29,9 +29,9 @@ namespace EllieBot {
 
         public Task Initialize() {
             this.comms = new Communications.NervousSystem();
-            this.comms.ConnectAsync(this.configs.BackboneServer, this.configs.BackbonePort).Wait();
+            this.comms.ConnectAsync(this.configs.MqttServer, this.configs.MqttPort).Wait();
 
-            return this.comms.SubscribeAsync(this.configs.TopicForCommands, this.OnDataReceived, this.OnConnection, this.OnDisconnection);
+            return this.comms.SubscribeAsync(this.configs.MqttTopicForCommands, this.OnDataReceived, this.OnConnection, this.OnDisconnection);
         }
 
         internal static Robot CreateInstance(ICommandProcessor proc, RobotConfig configs, Action<string> logger = null) {
@@ -43,7 +43,7 @@ namespace EllieBot {
         }
 
         public Task PublishAsync(string message) {
-            return this.comms.PublishAsync(this.configs.TopicForCommands, message);
+            return this.comms.PublishAsync(this.configs.MqttTopicForCommands, message);
         }
 
         private Task OnDisconnection(MqttClientDisconnectedEventArgs arg) {
@@ -62,7 +62,7 @@ namespace EllieBot {
             return Task.Run(() => {
                 string Payload = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                 try {
-                    RobotCommand cmd = JsonConvert.DeserializeObject<RobotCommand>(Payload);
+                    CommandPacket cmd = JsonConvert.DeserializeObject<CommandPacket>(Payload);
                     this.commandProcessor.QueueExecute(cmd);
                 } catch (Exception) {
                     this.logger?.Invoke($"Ignored: {Payload}");

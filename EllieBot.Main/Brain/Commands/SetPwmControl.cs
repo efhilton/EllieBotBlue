@@ -1,4 +1,5 @@
 ﻿using EllieBot.IO;
+using System;
 
 namespace EllieBot.Brain.Commands {
 
@@ -7,11 +8,15 @@ namespace EllieBot.Brain.Commands {
         public string[] Commands => new string[] { SET_PWM };
 
         private readonly IPWMController PwmController;
+        private readonly Action<string> Logger;
 
-        public SetPwmControl(IPWMController motorsController) => this.PwmController = motorsController;
+        public SetPwmControl(IPWMController motorsController, Action<string> logger = null) {
+            this.PwmController = motorsController;
+            this.Logger = logger;
+        }
 
-        public void Execute(RobotCommand command) {
-            if (command.Arguments.Length != 2) {
+        public void Execute(CommandPacket command) {
+            if (command == null || command.Arguments.Length != 2) {
                 return;
             }
 

@@ -3,12 +3,12 @@ using System.Device.Gpio;
 
 namespace EllieBot.IO.Devices {
 
-    public class RealMotor : IMotor {
+    public class HBridgeMotor : IMotor {
         public static int PWM_PERIOD_IN_MS = 100;
         public readonly Action<string> Logger;
         private bool disposedValue;
 
-        public RealMotor(string uniqueId, int pinForward, int pinBackward, Action<string> logger = null) {
+        public HBridgeMotor(string uniqueId, int pinForward, int pinBackward, Action<string> logger = null) {
             this.UniqueId = uniqueId;
             this.ForwardPin = pinForward;
             this.BackwardPin = pinBackward;
