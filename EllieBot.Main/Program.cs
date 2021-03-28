@@ -1,13 +1,13 @@
-﻿using EllieBot.IO;
-using EllieBot.Brain;
+﻿using EllieBot.Brain;
+using EllieBot.Brain.Commands;
+using EllieBot.IO;
+using EllieBot.IO.Devices;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Device.Gpio;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
-using EllieBot.IO.Devices;
-using EllieBot.Brain.Commands;
-using System.Collections.Generic;
 
 namespace EllieBot {
 

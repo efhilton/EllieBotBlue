@@ -1,6 +1,4 @@
-﻿using EllieBot.IO;
-using EllieBot.Brain;
-using EllieBot.Brain.Commands;
+﻿using EllieBot.Brain;
 using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
@@ -42,21 +40,11 @@ namespace EllieBot {
             return Instance;
         }
 
-        public Task PublishAsync(string message) {
-            return this.comms.PublishAsync(this.configs.MqttTopicForCommands, message);
-        }
+        public Task PublishAsync(string message) => this.comms.PublishAsync(this.configs.MqttTopicForCommands, message);
 
-        private Task OnDisconnection(MqttClientDisconnectedEventArgs arg) {
-            return Task.Run(() => {
-                this.logger?.Invoke("Client Disconnected");
-            });
-        }
+        private Task OnDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger?.Invoke("Client Disconnected"));
 
-        private Task OnConnection(MqttClientConnectedEventArgs arg) {
-            return Task.Run(() => {
-                this.logger?.Invoke("Client Connected");
-            });
-        }
+        private Task OnConnection(MqttClientConnectedEventArgs arg) => Task.Run(() => this.logger?.Invoke("Client Connected"));
 
         private Task OnDataReceived(MqttApplicationMessageReceivedEventArgs arg) {
             return Task.Run(() => {
