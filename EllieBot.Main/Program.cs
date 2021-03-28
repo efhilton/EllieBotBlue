@@ -1,30 +1,46 @@
-﻿using EllieBot.Ambulator;
+﻿using EllieBot.IO;
 using EllieBot.Brain;
 using Newtonsoft.Json;
 using System;
+using System.Device.Gpio;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
+using EllieBot.IO.Devices;
+using EllieBot.Brain.Commands;
 
 namespace EllieBot {
 
     internal class Program {
-        private static readonly string DEFAULT_CONFIG_FILE_NAME = "robot_config.json";
 
         public static void Main(string[] args) {
+            Action<string> logger = Logger;
+
+            GpioController controller;
+            try {
+                controller = new GpioController();
+                logger?.Invoke("IO Enabled.");
+            } catch (NotSupportedException) {
+                controller = null;
+                logger?.Invoke("No GPIO. IO Disabled");
+            }
+
             IFileSystem fileSystem = new FileSystem();
-            RobotConfig configs = RobotConfig.LoadFile(DEFAULT_CONFIG_FILE_NAME, fileSystem, Logger).GetAwaiter().GetResult();
+            RobotConfig configs = RobotConfig.LoadFile(Constants.DEFAULT_CONFIG_FILE_NAME, fileSystem, logger).GetAwaiter().GetResult();
 
-            IMotor motorLeft = new RealMotor("Left", configs.LeftMotorForwardPin, configs.LeftMotorBackwardPin, Logger);
-            IMotor motorRight = new RealMotor("Right", configs.RightMotorForwardPin, configs.RightMotorBackwardPin, Logger);
-            IMotorsController motors = new RawMotorsController(motorLeft, motorRight, Logger);
-            motors.Initialize();
+            IBlinkable headlights = new LED(configs.HeadlightsPin, logger);
+            IPWMDevice motorLeft = new RealMotor(Constants.LEFT_MOTOR_ID, configs.LeftMotorForwardPin, configs.LeftMotorBackwardPin, logger);
+            IPWMDevice motorRight = new RealMotor(Constants.RIGHT_MOTOR_ID, configs.RightMotorForwardPin, configs.RightMotorBackwardPin, logger);
 
-            ICommandProcessor proc = new CommandProcessor();
+            IPWMController pwmController = PwmController.CreateInstance(controller, new IPWMDevice[] { motorLeft, motorRight }, logger);
 
-            Robot p = new Robot(proc, motors, configs);
+            ICommandProcessor commandProcessor = new CommandProcessor();
+            commandProcessor.RegisterCommand(new DriveMotorControl(pwmController));
+            commandProcessor.RegisterCommand(new SetPwmControl(pwmController));
+            commandProcessor.RegisterCommand(new SetLedControl(new IBlinkable[] { headlights }));
 
-            p.Initialize().Wait();
-            SendStopCommand(p).Wait();
+            Robot robot = Robot.CreateInstance(commandProcessor, configs, logger);
+            robot.Initialize().Wait();
+            SendStopCommand(robot).Wait();
 
             Console.WriteLine("Robot is Running. Press any key to Exit");
             Console.ReadLine();

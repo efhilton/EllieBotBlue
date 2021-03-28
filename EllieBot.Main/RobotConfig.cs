@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 namespace EllieBot {
 
     public class RobotConfig {
-        public int BackbonePort { get; set; } = NervousSystem.Constants.DEFAULT_COMMUNICATIONS_PORT;
-        public string BackboneServer { get; set; } = NervousSystem.Constants.DEFAULT_COMMUNICATIONS_ADDRESS;
-        public int LeftMotorBackwardPin { get; internal set; } = Ambulator.Constants.DEFAULT_BACKWARD_PIN_LEFT;
-        public int LeftMotorForwardPin { get; internal set; } = Ambulator.Constants.DEFAULT_FORWARD_PIN_LEFT;
-        public int RightMotorBackwardPin { get; internal set; } = Ambulator.Constants.DEFAULT_BACKWARD_PIN_RIGHT;
-        public int RightMotorForwardPin { get; internal set; } = Ambulator.Constants.DEFAULT_FORWARD_PIN_RIGHT;
-        public string TopicForCommands { get; set; } = NervousSystem.Constants.DEFAULT_TOPIC_FOR_COMMANDS;
+        public int BackbonePort { get; set; } = Constants.DEFAULT_COMMUNICATIONS_PORT;
+        public string BackboneServer { get; set; } = Constants.DEFAULT_COMMUNICATIONS_ADDRESS;
+        public int LeftMotorBackwardPin { get; internal set; } = Constants.DEFAULT_BACKWARD_PIN_LEFT;
+        public int LeftMotorForwardPin { get; internal set; } = Constants.DEFAULT_FORWARD_PIN_LEFT;
+        public int RightMotorBackwardPin { get; internal set; } = Constants.DEFAULT_BACKWARD_PIN_RIGHT;
+        public int RightMotorForwardPin { get; internal set; } = Constants.DEFAULT_FORWARD_PIN_RIGHT;
+        public int HeadlightsPin { get; internal set; } = Constants.DEFAULT_HEADLIGHTS_PIN;
+        public string TopicForCommands { get; set; } = Constants.DEFAULT_TOPIC_FOR_COMMANDS;
+        public string TopicForLogs { get; set; } = Constants.DEFAULT_TOPIC_FOR_LOGS;
 
         internal static Task<RobotConfig> LoadFile(string fileName, IFileSystem fileSystem, System.Action<string> callback = null) {
             return Task.Run(() => {

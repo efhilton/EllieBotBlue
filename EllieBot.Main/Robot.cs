@@ -1,4 +1,4 @@
-﻿using EllieBot.Ambulator;
+﻿using EllieBot.IO;
 using EllieBot.Brain;
 using EllieBot.Brain.Commands;
 using MQTTnet;
@@ -14,27 +14,32 @@ namespace EllieBot {
     public class Robot {
         private Communications.NervousSystem comms;
         private readonly ICommandProcessor commandProcessor;
-        private readonly IMotorsController motorController;
         private readonly RobotConfig configs;
+        private readonly Action<string> logger;
 
-        public Robot(ICommandProcessor cmdProcessor,
-                     IMotorsController motorController,
-                     RobotConfig configs) {
+        public static Robot Instance { get; private set; }
+
+        private Robot(ICommandProcessor cmdProcessor,
+                     RobotConfig configs,
+                     Action<string> logger = null) {
             this.commandProcessor = cmdProcessor;
-            this.motorController = motorController;
             this.configs = configs;
+            this.logger = logger;
         }
 
         public Task Initialize() {
-            // Register All Desired Commands
-            this.commandProcessor.RegisterCommand(new GoRawMotorControl(this.motorController));
-            this.commandProcessor.RegisterCommand(new GoTankMotorControl(this.motorController));
-            this.commandProcessor.RegisterCommand(new GoInterpretedMotorControl(this.motorController));
-
             this.comms = new Communications.NervousSystem();
             this.comms.ConnectAsync(this.configs.BackboneServer, this.configs.BackbonePort).Wait();
 
             return this.comms.SubscribeAsync(this.configs.TopicForCommands, this.OnDataReceived, this.OnConnection, this.OnDisconnection);
+        }
+
+        internal static Robot CreateInstance(ICommandProcessor proc, RobotConfig configs, Action<string> logger = null) {
+            if (Instance != null) {
+                return Instance;
+            }
+            Instance = new Robot(proc, configs, logger);
+            return Instance;
         }
 
         public Task PublishAsync(string message) {
@@ -43,13 +48,13 @@ namespace EllieBot {
 
         private Task OnDisconnection(MqttClientDisconnectedEventArgs arg) {
             return Task.Run(() => {
-                Console.WriteLine("Client Disconnected");
+                this.logger?.Invoke("Client Disconnected");
             });
         }
 
         private Task OnConnection(MqttClientConnectedEventArgs arg) {
             return Task.Run(() => {
-                Console.WriteLine("Client Connected");
+                this.logger?.Invoke("Client Connected");
             });
         }
 
@@ -60,7 +65,7 @@ namespace EllieBot {
                     RobotCommand cmd = JsonConvert.DeserializeObject<RobotCommand>(Payload);
                     this.commandProcessor.QueueExecute(cmd);
                 } catch (Exception) {
-                    Console.WriteLine($"Ignored: {Payload}");
+                    this.logger?.Invoke($"Ignored: {Payload}");
                 }
             });
         }

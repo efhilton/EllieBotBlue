@@ -1,9 +1,8 @@
-﻿namespace EllieBot.Brain
-{
-    public interface ICommandExecutor
-    {
-        string Command { get; }
+﻿namespace EllieBot.Brain {
 
-        void Execute(string[] commandArguments);
+    public interface ICommandExecutor {
+        string[] Commands { get; }
+
+        void Execute(RobotCommand command);
     }
 }

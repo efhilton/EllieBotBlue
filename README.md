@@ -70,7 +70,7 @@ Your configuration file will probably look something like this:
   "LeftMotorForwardPin": 8,
   "RightMotorBackwardPin": 9,
   "RightMotorForwardPin": 10,
-  "TopicForCommands": "elliebot/commands"
+  "TopicForCommands": "com.efhilton.elliebot.commands"
 }
 ```
 Here, the settings are as follows:
@@ -79,7 +79,7 @@ Here, the settings are as follows:
 | --- | ---| --- | 
 | BackbonePort | 1883 | The port via which to connect to the MQTT broker | 
 | BackboneServer | localhost | The server hosting the MQTT broker (it could be local or remote) |
-| TopicForCommands | elliebot/commands | The MQTT topic via which commands will be received |
+| TopicForCommands | com.efhilton.elliebot.commands | The MQTT topic via which commands will be received |
 | LeftMotorForwardPin | 8 | The GPIO pin which will drive the Left motor forward | 
 | LeftMotorBackwardPin | 7 | The GPIO pin which will drive the Left motor backward | 
 | RightMotorForwardPin | 10| The GPIO pin which will drive the Right motor forward | 
