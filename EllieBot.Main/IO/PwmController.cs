@@ -32,7 +32,7 @@ namespace EllieBot.IO {
             }
 
             this.Tasks = new Task[this.Devices.Keys.Count];
-            this.Logger.Info($"Registered {this.Devices.Keys.Count} PWM Devices");
+            this.Logger.Debug($"Registered {this.Devices.Keys.Count} PWM Devices");
         }
 
         public static int ScaleMotorInput(double valueNegOneToOne) {

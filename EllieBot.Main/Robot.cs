@@ -40,9 +40,9 @@ namespace EllieBot {
             return Instance;
         }
 
-        public Task PublishCommandAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForCommands, message);
+        public Task PublishCommandAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForCommands, message, false, 0);
 
-        public Task PublishLogAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForLogging, message);
+        public Task PublishLogAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForLogging, message, false, 0);
 
         private Task OnCommandDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger.Info("Client Disconnected"));
 

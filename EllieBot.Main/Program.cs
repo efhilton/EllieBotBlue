@@ -25,10 +25,10 @@ namespace EllieBot {
             GpioController controller;
             try {
                 controller = new GpioController();
-                logger.Info("IO Enabled.");
+                logger.Warn("IO Enabled.");
             } catch (NotSupportedException) {
                 controller = null;
-                logger.Info("No GPIO. IO Disabled");
+                logger.Warn("No GPIO. IO Disabled");
             }
 
             IFileSystem fileSystem = new FileSystem();
@@ -45,6 +45,7 @@ namespace EllieBot {
             robot.Initialize().Wait();
             logger.MinLevel = CalculateLoggingLevelFromConfigs(configs, LoggingLevel.INFO);
             logger.LogMessageFcn = robot.PublishLogAsync;
+            logger.Info($"Set logging level to {logger.MinLevel}");
 
             logger.Info("EllieBot is Fully Operational.");
 

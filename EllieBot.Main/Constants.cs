@@ -53,10 +53,12 @@
         }
 
         public enum LoggingLevel {
-            FINE = 0,
-            INFO = 1,
+            FINEST = 0,
+            FINE = 1,
             DEBUG = 2,
-            ERROR = 3
+            INFO = 3,
+            WARN = 4,
+            ERROR = 5
         }
     }
 }

@@ -44,7 +44,7 @@ namespace EllieBot.IO {
             this.Controller = controller;
 
             List<Task> tasks = new List<Task>();
-            foreach (IPWMDevice device in this.Blinkables.Values) {
+            foreach (IBlinkable device in this.Blinkables.Values) {
                 tasks.Add(device.Init(this.Controller));
             }
             return Task.WhenAll(tasks.ToArray());
@@ -78,7 +78,7 @@ namespace EllieBot.IO {
             if (!disposedValue) {
                 if (disposing) {
                     if (this.Controller != null) {
-                        foreach (IPWMDevice device in this.Blinkables.Values) {
+                        foreach (IBlinkable device in this.Blinkables.Values) {
                             device.TurnOff();
                             device.Dispose();
                         }

@@ -50,7 +50,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOff() {
             if (this.Controller == null) {
-                this.Logger.Fine($"Motor {this.UniqueId} Off");
+                this.Logger.Finest($"Motor {this.UniqueId} Off");
                 return;
             }
             this.SetDirection();
@@ -60,7 +60,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOn() {
             if (this.Controller == null) {
-                this.Logger.Fine($"Motor {this.UniqueId} On");
+                this.Logger.Finest($"Motor {this.UniqueId} On");
                 return;
             }
             this.SetDirection();

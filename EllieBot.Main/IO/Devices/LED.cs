@@ -34,7 +34,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOff() {
             if (this.Controller == null) {
-                this.Logger.Fine($"LED {this.UniqueId} Off");
+                this.Logger.Finest($"LED {this.UniqueId} Off");
                 return;
             }
             this.Controller.Write(this.Pin, PinValue.Low);
@@ -42,7 +42,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOn() {
             if (this.Controller == null) {
-                this.Logger.Fine($"LED {this.UniqueId} On");
+                this.Logger.Finest($"LED {this.UniqueId} On");
                 return;
             }
             this.Controller.Write(this.Pin, PinValue.High);
