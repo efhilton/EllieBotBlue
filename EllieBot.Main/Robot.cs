@@ -44,9 +44,9 @@ namespace EllieBot {
 
         public Task PublishLogAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForLogging, message, false, 0);
 
-        private Task OnCommandDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger.Info("Client Disconnected"));
+        private Task OnCommandDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger.Info("Disconnected. Until next time!"));
 
-        private Task OnCommandConnection(MqttClientConnectedEventArgs arg) => Task.Run(() => this.logger.Info("Client Connected"));
+        private Task OnCommandConnection(MqttClientConnectedEventArgs arg) => Task.Run(() => this.logger.Info("Connected! Ready for commands!"));
 
         private Task OnCommandReceived(MqttApplicationMessageReceivedEventArgs arg) {
             return Task.Run(() => {
