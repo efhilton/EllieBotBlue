@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Device.Gpio;
+using System.Threading.Tasks;
 
 namespace EllieBot.IO.Devices {
 
     internal class DummyMotor : IMotor {
         public int _duty = 0;
 
-        public DummyMotor(string name) {
-            this.UniqueId = name;
-        }
+        public DummyMotor(string name) => this.UniqueId = name;
 
         public int ActivePin { get; set; }
         public int BackwardPin { get; set; }
@@ -29,16 +28,10 @@ namespace EllieBot.IO.Devices {
             // do nothing
         }
 
-        public void Init(GpioController controller) {
-            Console.Out.WriteLine($"{this.UniqueId} Motor initialized");
-        }
+        public Task Init(GpioController controller) => Task.Run(() => Console.Out.WriteLine($"{this.UniqueId} Motor initialized"));
 
-        public void TurnOff() {
-            Console.Out.WriteLine($"{this.UniqueId} Motor off");
-        }
+        public void TurnOff() => Console.Out.WriteLine($"{this.UniqueId} Motor off");
 
-        public void TurnOn() {
-            Console.Out.WriteLine($"{this.UniqueId} Motor On");
-        }
+        public void TurnOn() => Console.Out.WriteLine($"{this.UniqueId} Motor On");
     }
 }

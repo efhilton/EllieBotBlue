@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading.Tasks;
+using static EllieBot.Constants;
 
 namespace EllieBot.Configs {
 
@@ -13,48 +15,49 @@ namespace EllieBot.Configs {
     }
 
     public class RobotConfig {
+        public string DebuggingLevel { get; set; } = LoggingLevel.INFO.ToString();
 
         public MqttConnectionDescription MqttDefinitions = new MqttConnectionDescription {
-            Port = Defaults.Mqtt.PORT,
-            Host = Defaults.Mqtt.HOST,
-            TopicForCommands = Defaults.Mqtt.TOPIC_FOR_COMMANDS,
-            TopicForLogging = Defaults.Mqtt.TOPIC_FOR_LOGGING
+            Port = Constants.Mqtt.PORT,
+            Host = Constants.Mqtt.HOST,
+            TopicForCommands = Constants.Mqtt.TOPIC_FOR_COMMANDS,
+            TopicForLogging = Constants.Mqtt.TOPIC_FOR_LOGGING
         };
 
         public DriveTrainDescription DriveTrainDefinitions = new DriveTrainDescription {
-            LeftMotorUniqueId = Defaults.ComponentIds.LEFT_MOTOR,
-            RightMotorUniqueId = Defaults.ComponentIds.RIGHT_MOTOR
+            LeftMotorUniqueId = Constants.ComponentIds.LEFT_MOTOR,
+            RightMotorUniqueId = Constants.ComponentIds.RIGHT_MOTOR
         };
 
         public HBridgeMotorDescription[] HBridgeMotorDefinitions = new HBridgeMotorDescription[] {
             new HBridgeMotorDescription {
-                UniqueId = Defaults.ComponentIds.LEFT_MOTOR,
-                ForwardPin = Defaults.PinNums.MOTOR_FORWARD_LEFT,
-                BackwardPin = Defaults.PinNums.MOTOR_BACKWARD_LEFT
+                UniqueId = Constants.ComponentIds.LEFT_MOTOR,
+                ForwardPin = Constants.PinNums.MOTOR_FORWARD_LEFT,
+                BackwardPin = Constants.PinNums.MOTOR_BACKWARD_LEFT
             },
             new HBridgeMotorDescription {
-                UniqueId = Defaults.ComponentIds.RIGHT_MOTOR,
-                ForwardPin = Defaults.PinNums.MOTOR_FORWARD_RIGHT,
-                BackwardPin = Defaults.PinNums.MOTOR_BACKWARD_LEFT
+                UniqueId = Constants.ComponentIds.RIGHT_MOTOR,
+                ForwardPin = Constants.PinNums.MOTOR_FORWARD_RIGHT,
+                BackwardPin = Constants.PinNums.MOTOR_BACKWARD_LEFT
             }
         };
 
         public LedDescription[] LedDefinitions = new LedDescription[] {
             new LedDescription {
-                UniqueId = Defaults.ComponentIds.HEAD_LIGHTS,
-                PinNumber = Defaults.PinNums.HEAD_LIGHTS
+                UniqueId = Constants.ComponentIds.HEAD_LIGHTS,
+                PinNumber = Constants.PinNums.HEAD_LIGHTS
             },
             new LedDescription {
-                UniqueId = Defaults.ComponentIds.BRAKE_LIGHTS,
-                PinNumber = Defaults.PinNums.BRAKE_LIGHTS
+                UniqueId = Constants.ComponentIds.BRAKE_LIGHTS,
+                PinNumber = Constants.PinNums.BRAKE_LIGHTS
             },
             new LedDescription {
-                UniqueId = Defaults.ComponentIds.OTHER_LIGHTS,
-                PinNumber = Defaults.PinNums.OTHER_LIGHTS
+                UniqueId = Constants.ComponentIds.OTHER_LIGHTS,
+                PinNumber = Constants.PinNums.OTHER_LIGHTS
             }
         };
 
-        internal static Task<RobotConfig> LoadFile(string fileName, IFileSystem fileSystem, System.Action<string> callback = null) {
+        internal static Task<RobotConfig> LoadFile(string fileName, IFileSystem fileSystem, Action<string> callback = null) {
             return Task.Run(() => {
                 string assyLoc = fileSystem.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string fullPath = fileSystem.Path.Combine(assyLoc, fileName);

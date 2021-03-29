@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Device.Gpio;
+using System.Threading.Tasks;
 
 namespace EllieBot.IO.Devices {
 
@@ -9,7 +10,7 @@ namespace EllieBot.IO.Devices {
     public interface IBlinkable : IDisposable {
         string UniqueId { get; }
 
-        void Init(GpioController controller);
+        Task Init(GpioController controller);
 
         void TurnOff();
 

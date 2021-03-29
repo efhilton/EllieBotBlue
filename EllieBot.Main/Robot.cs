@@ -1,5 +1,6 @@
 ﻿using EllieBot.Brain;
 using EllieBot.Configs;
+using EllieBot.Logging;
 using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
@@ -14,13 +15,11 @@ namespace EllieBot {
         private Communications.NervousSystem comms;
         private readonly ICommandProcessor commandProcessor;
         private readonly RobotConfig configs;
-        private readonly Action<string> logger;
+        private readonly MqttLogger logger;
 
         public static Robot Instance { get; private set; }
 
-        private Robot(ICommandProcessor cmdProcessor,
-                     RobotConfig configs,
-                     Action<string> logger = null) {
+        private Robot(ICommandProcessor cmdProcessor, RobotConfig configs, MqttLogger logger) {
             this.commandProcessor = cmdProcessor;
             this.configs = configs;
             this.logger = logger;
@@ -30,10 +29,10 @@ namespace EllieBot {
             this.comms = new Communications.NervousSystem();
             this.comms.ConnectAsync(this.configs.MqttDefinitions.Host, this.configs.MqttDefinitions.Port).Wait();
 
-            return this.comms.SubscribeAsync(this.configs.MqttDefinitions.TopicForCommands, this.OnDataReceived, this.OnConnection, this.OnDisconnection);
+            return this.comms.SubscribeAsync(this.configs.MqttDefinitions.TopicForCommands, this.OnCommandReceived, this.OnCommandConnection, this.OnCommandDisconnection);
         }
 
-        internal static Robot CreateInstance(ICommandProcessor proc, RobotConfig configs, Action<string> logger = null) {
+        internal static Robot CreateInstance(ICommandProcessor proc, RobotConfig configs, MqttLogger logger) {
             if (Instance != null) {
                 return Instance;
             }
@@ -41,20 +40,22 @@ namespace EllieBot {
             return Instance;
         }
 
-        public Task PublishAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForCommands, message);
+        public Task PublishCommandAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForCommands, message);
 
-        private Task OnDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger?.Invoke("Client Disconnected"));
+        public Task PublishLogAsync(string message) => this.comms.PublishAsync(this.configs.MqttDefinitions.TopicForLogging, message);
 
-        private Task OnConnection(MqttClientConnectedEventArgs arg) => Task.Run(() => this.logger?.Invoke("Client Connected"));
+        private Task OnCommandDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.logger.Info("Client Disconnected"));
 
-        private Task OnDataReceived(MqttApplicationMessageReceivedEventArgs arg) {
+        private Task OnCommandConnection(MqttClientConnectedEventArgs arg) => Task.Run(() => this.logger.Info("Client Connected"));
+
+        private Task OnCommandReceived(MqttApplicationMessageReceivedEventArgs arg) {
             return Task.Run(() => {
                 string Payload = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                 try {
                     CommandPacket cmd = JsonConvert.DeserializeObject<CommandPacket>(Payload);
                     this.commandProcessor.QueueExecute(cmd);
                 } catch (Exception) {
-                    this.logger?.Invoke($"Ignored: {Payload}");
+                    this.logger.Debug($"Ignored: {Payload}");
                 }
             });
         }

@@ -1,13 +1,14 @@
-﻿using System;
+﻿using EllieBot.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace EllieBot.Brain {
 
     public class CommandProcessor : ICommandProcessor {
-        private readonly Action<string> Logger;
+        private readonly MqttLogger Logger;
         private readonly Dictionary<string, ICommandExecutor> commands;
 
-        public CommandProcessor(Action<string> logger = null) {
+        public CommandProcessor(MqttLogger logger) {
             this.Logger = logger;
             this.commands = new Dictionary<string, ICommandExecutor>();
         }
@@ -18,7 +19,7 @@ namespace EllieBot.Brain {
                 foreach (string key in keys) {
                     string cmd = key.Trim().ToLower();
                     this.commands.Add(cmd, executor);
-                    this.Logger?.Invoke($"Registered command: {cmd}");
+                    this.Logger.Info($"Registered command: {cmd}");
                 }
             }
         }
@@ -35,7 +36,7 @@ namespace EllieBot.Brain {
                     executor?.Execute(cmd);
                 }
             } catch (Exception e) {
-                this.Logger?.Invoke($"Error: {e.Message}");
+                this.Logger.Error(e.Message);
             }
         }
     }

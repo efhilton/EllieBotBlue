@@ -1,6 +1,6 @@
 ﻿namespace EllieBot {
 
-    internal class Defaults {
+    public class Constants {
 
         public static class PinNums {
             internal const int MOTOR_FORWARD_LEFT = 8;
@@ -50,6 +50,13 @@
             public static class Pwm {
                 internal const string SET_PWM = "set.pwm";
             }
+        }
+
+        public enum LoggingLevel {
+            FINE = 0,
+            INFO = 1,
+            DEBUG = 2,
+            ERROR = 3
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EllieBot.IO.Devices;
+using EllieBot.Logging;
 using System;
 using System.Collections.Generic;
 using System.Device.Gpio;
@@ -14,24 +15,24 @@ namespace EllieBot.IO {
 
         private readonly Dictionary<string, IPWMDevice> Devices;
         private readonly Task[] Tasks;
-        private readonly Action<string> Logger;
+        private readonly MqttLogger Logger;
         private bool disposedValue = false;
         private bool IsRunningPwm = false;
         private Timer PwmCycleTimer = null;
         private static PwmController Instance;
 
-        private PwmController(IEnumerable<IPWMDevice> devices, Action<string> logger = null) {
+        private PwmController(IEnumerable<IPWMDevice> devices, MqttLogger logger) {
             this.Logger = logger;
             this.Devices = new Dictionary<string, IPWMDevice>();
 
             foreach (IPWMDevice device in devices) {
                 string deviceId = device.UniqueId.Trim().ToLower();
                 this.Devices.Add(deviceId, device);
-                this.Logger?.Invoke($"Registered PWM device: {deviceId}");
+                this.Logger.Info($"Registered PWM device: {deviceId}");
             }
 
             this.Tasks = new Task[this.Devices.Keys.Count];
-            this.Logger?.Invoke($"Registered {this.Devices.Keys.Count} PWM Devices");
+            this.Logger.Info($"Registered {this.Devices.Keys.Count} PWM Devices");
         }
 
         public static int ScaleMotorInput(double valueNegOneToOne) {
@@ -40,12 +41,12 @@ namespace EllieBot.IO {
             return Convert.ToInt32(dutyCycle);
         }
 
-        internal static IPWMController CreateInstance(GpioController controller, IEnumerable<IPWMDevice> iPWMDevices, Action<string> logger) {
+        internal static IPWMController CreateInstance(GpioController controller, IEnumerable<IPWMDevice> iPWMDevices, MqttLogger logger) {
             if (Instance != null) {
                 return Instance;
             }
             Instance = new PwmController(iPWMDevices, logger);
-            Instance.Initialize(controller);
+            Instance.Initialize(controller).Wait();
             return Instance;
         }
 
@@ -57,12 +58,12 @@ namespace EllieBot.IO {
         private Task Initialize(GpioController controller) {
             this.Controller = controller;
 
+            List<Task> tasks = new List<Task>();
             foreach (IPWMDevice device in this.Devices.Values) {
-                device.Init(this.Controller);
+                tasks.Add(device.Init(this.Controller));
             }
-
-            this.PwmCycleTimer = new Timer(new TimerCallback(this.RunOnePwmCycle), null, START_DELAY_IN_MS, REFRESH_PERIOD_IN_MS);
-            return Task.FromResult(0);
+            return Task.WhenAll(tasks.ToArray())
+            .ContinueWith((_) => this.PwmCycleTimer = new Timer(this.RunOnePwmCycle, null, START_DELAY_IN_MS, REFRESH_PERIOD_IN_MS));
         }
 
         public void SetDutyCycle(string deviceName, double value) {

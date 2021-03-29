@@ -1,14 +1,16 @@
-﻿using System;
+﻿using EllieBot.Logging;
+using System;
 using System.Device.Gpio;
+using System.Threading.Tasks;
 
 namespace EllieBot.IO.Devices {
 
     public class HBridgeMotor : IMotor {
         public static int PWM_PERIOD_IN_MS = 100;
-        public readonly Action<string> Logger;
+        public readonly MqttLogger Logger;
         private bool disposedValue;
 
-        public HBridgeMotor(string uniqueId, int pinForward, int pinBackward, Action<string> logger = null) {
+        public HBridgeMotor(string uniqueId, int pinForward, int pinBackward, MqttLogger logger) {
             this.UniqueId = uniqueId;
             this.ForwardPin = pinForward;
             this.BackwardPin = pinBackward;
@@ -23,15 +25,17 @@ namespace EllieBot.IO.Devices {
         public string UniqueId { get; set; }
         public int TargetDutyCycle { get; set; }
 
-        public void Init(GpioController ctl) {
-            this.TargetDutyCycle = 0;
+        public Task Init(GpioController ctl) {
+            return Task.Run(() => {
+                this.TargetDutyCycle = 0;
 
-            this.Controller = ctl;
-            if (this.Controller != null) {
-                this.Controller.OpenPin(this.ForwardPin, PinMode.Output);
-                this.Controller.OpenPin(this.BackwardPin, PinMode.Output);
-                this.TurnOff();
-            }
+                this.Controller = ctl;
+                if (this.Controller != null) {
+                    this.Controller.OpenPin(this.ForwardPin, PinMode.Output);
+                    this.Controller.OpenPin(this.BackwardPin, PinMode.Output);
+                    this.TurnOff();
+                }
+            });
         }
 
         public void SetDirection() {
@@ -46,7 +50,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOff() {
             if (this.Controller == null) {
-                this.Logger?.Invoke($"Motor {this.UniqueId} Off");
+                this.Logger.Fine($"Motor {this.UniqueId} Off");
                 return;
             }
             this.SetDirection();
@@ -56,7 +60,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOn() {
             if (this.Controller == null) {
-                this.Logger?.Invoke($"Motor {this.UniqueId} On");
+                this.Logger.Fine($"Motor {this.UniqueId} On");
                 return;
             }
             this.SetDirection();

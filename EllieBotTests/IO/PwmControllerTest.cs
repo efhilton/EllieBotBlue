@@ -20,8 +20,6 @@ namespace EllieBot.IO.Tests {
         [TestCase(-0.14, -10)]
         [TestCase(-0.04, 0)]
         [TestCase(-0.01, 0)]
-        public void TestScaleMotorInput(double input, int expected) {
-            Assert.That(PwmController.ScaleMotorInput(input), Is.EqualTo(expected));
-        }
+        public void TestScaleMotorInput(double input, int expected) => Assert.That(PwmController.ScaleMotorInput(input), Is.EqualTo(expected));
     }
 }

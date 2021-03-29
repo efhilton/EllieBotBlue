@@ -1,17 +1,19 @@
-﻿using System;
+﻿using EllieBot.Logging;
+using System;
 using System.Device.Gpio;
+using System.Threading.Tasks;
 
 namespace EllieBot.IO.Devices {
 
     internal class LED : IBlinkable {
-        private readonly Action<string> Logger;
+        private readonly MqttLogger Logger;
         private readonly int Pin;
         private GpioController Controller;
         private bool disposedValue;
 
         public string UniqueId { get; internal set; }
 
-        public LED(string uniqueId, int headlightsPin, Action<string> logger = null) {
+        public LED(string uniqueId, int headlightsPin, MqttLogger logger) {
             if (string.IsNullOrWhiteSpace(uniqueId)) {
                 throw new ArgumentException("Unique ID cannot be null");
             }
@@ -20,17 +22,19 @@ namespace EllieBot.IO.Devices {
             this.Logger = logger;
         }
 
-        public void Init(GpioController controller) {
-            this.Controller = controller;
-            if (this.Controller != null) {
-                this.Controller.OpenPin(this.Pin, PinMode.Output);
-                this.TurnOff();
-            }
+        public Task Init(GpioController controller) {
+            return Task.Run(() => {
+                this.Controller = controller;
+                if (this.Controller != null) {
+                    this.Controller.OpenPin(this.Pin, PinMode.Output);
+                    this.TurnOff();
+                }
+            });
         }
 
         public void TurnOff() {
             if (this.Controller == null) {
-                this.Logger?.Invoke($"LED {this.UniqueId} Off");
+                this.Logger.Fine($"LED {this.UniqueId} Off");
                 return;
             }
             this.Controller.Write(this.Pin, PinValue.Low);
@@ -38,7 +42,7 @@ namespace EllieBot.IO.Devices {
 
         public void TurnOn() {
             if (this.Controller == null) {
-                this.Logger?.Invoke($"LED {this.UniqueId} On");
+                this.Logger.Fine($"LED {this.UniqueId} On");
                 return;
             }
             this.Controller.Write(this.Pin, PinValue.High);
