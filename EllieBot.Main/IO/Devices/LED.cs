@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 namespace EllieBot.IO.Devices {
 
     internal class LED : IBlinkable {
-        private readonly MqttLogger Logger;
+        private readonly ILogger Logger;
         private readonly int Pin;
         private GpioController Controller;
         private bool disposedValue;
 
         public string UniqueId { get; internal set; }
 
-        public LED(string uniqueId, int headlightsPin, MqttLogger logger) {
+        public LED(string uniqueId, int pinNumber, ILogger logger) {
             if (string.IsNullOrWhiteSpace(uniqueId)) {
                 throw new ArgumentException("Unique ID cannot be null");
             }
             this.UniqueId = uniqueId.Trim();
-            this.Pin = headlightsPin;
+            this.Pin = pinNumber;
             this.Logger = logger;
         }
 
-        public Task Init(GpioController controller) {
+        public Task Initialize(GpioController controller) {
             return Task.Run(() => {
                 this.Controller = controller;
                 if (this.Controller != null) {

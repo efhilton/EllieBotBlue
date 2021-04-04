@@ -5,5 +5,7 @@
         void RegisterCommand(ICommandExecutor executor);
 
         void QueueExecute(CommandPacket cmd);
+
+        void Initialize();
     }
 }

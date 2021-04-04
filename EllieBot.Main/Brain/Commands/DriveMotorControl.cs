@@ -1,16 +1,13 @@
 ﻿using EllieBot.IO;
-using EllieBot.Logging;
 using System;
 
 namespace EllieBot.Brain.Commands {
 
     internal class DriveMotorControl : ICommandExecutor {
-        private readonly MqttLogger Logger;
         private readonly string leftMotorId;
         private readonly string rightMotorId;
 
-        public DriveMotorControl(string leftMotorUniqueId, string rightMotorUniqueId, IPWMController motorsController, MqttLogger logger) {
-            this.Logger = logger;
+        public DriveMotorControl(string leftMotorUniqueId, string rightMotorUniqueId, IPWMController motorsController) {
             this.leftMotorId = leftMotorUniqueId;
             this.rightMotorId = rightMotorUniqueId;
             this.Motors = motorsController;

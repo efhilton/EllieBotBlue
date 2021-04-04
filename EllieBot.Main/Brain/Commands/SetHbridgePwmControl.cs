@@ -1,14 +1,13 @@
 ﻿using EllieBot.IO;
-using EllieBot.Logging;
 
 namespace EllieBot.Brain.Commands {
 
-    internal class SetPwmControl : ICommandExecutor {
+    internal class SetHbridgePwmControl : ICommandExecutor {
         public string[] Commands => new string[] { Constants.Commands.Pwm.SET_PWM };
 
         private readonly IPWMController PwmController;
 
-        public SetPwmControl(IPWMController motorsController) => this.PwmController = motorsController;
+        public SetHbridgePwmControl(IPWMController motorsController) => this.PwmController = motorsController;
 
         public void Execute(CommandPacket command) {
             if (command == null || command.Arguments.Length != 2) {

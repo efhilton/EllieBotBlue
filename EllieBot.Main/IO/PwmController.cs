@@ -15,13 +15,13 @@ namespace EllieBot.IO {
 
         private readonly Dictionary<string, IPWMDevice> Devices;
         private readonly Task[] Tasks;
-        private readonly MqttLogger Logger;
+        private readonly ILogger Logger;
         private bool disposedValue = false;
         private bool IsRunningPwm = false;
         private Timer PwmCycleTimer = null;
         private static PwmController Instance;
 
-        private PwmController(IEnumerable<IPWMDevice> devices, MqttLogger logger) {
+        private PwmController(IEnumerable<IPWMDevice> devices, ILogger logger) {
             this.Logger = logger;
             this.Devices = new Dictionary<string, IPWMDevice>();
 
@@ -41,7 +41,7 @@ namespace EllieBot.IO {
             return Convert.ToInt32(dutyCycle);
         }
 
-        internal static IPWMController CreateInstance(GpioController controller, IEnumerable<IPWMDevice> iPWMDevices, MqttLogger logger) {
+        internal static IPWMController CreateInstance(GpioController controller, IEnumerable<IPWMDevice> iPWMDevices, ILogger logger) {
             if (Instance != null) {
                 return Instance;
             }
@@ -60,7 +60,7 @@ namespace EllieBot.IO {
 
             List<Task> tasks = new List<Task>();
             foreach (IPWMDevice device in this.Devices.Values) {
-                tasks.Add(device.Init(this.Controller));
+                tasks.Add(device.Initialize(this.Controller));
             }
             return Task.WhenAll(tasks.ToArray())
             .ContinueWith((_) => this.PwmCycleTimer = new Timer(this.RunOnePwmCycle, null, START_DELAY_IN_MS, REFRESH_PERIOD_IN_MS));

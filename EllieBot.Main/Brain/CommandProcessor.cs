@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace EllieBot.Brain {
 
     public class CommandProcessor : ICommandProcessor {
-        private readonly MqttLogger Logger;
+        private readonly ILogger Logger;
         private readonly Dictionary<string, ICommandExecutor> commands;
 
-        public CommandProcessor(MqttLogger logger) {
+        public CommandProcessor(ILogger logger) {
             this.Logger = logger;
             this.commands = new Dictionary<string, ICommandExecutor>();
         }

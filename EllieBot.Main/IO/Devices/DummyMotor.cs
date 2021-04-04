@@ -14,7 +14,6 @@ namespace EllieBot.IO.Devices {
         public GpioController Controller { get; set; }
         public int ForwardPin { get; set; }
         public int InactivePin { get; set; }
-        public string UniqueId { get; set; }
 
         public int TargetDutyCycle {
             get => this._duty;
@@ -24,11 +23,13 @@ namespace EllieBot.IO.Devices {
             }
         }
 
+        public string UniqueId { get; set; }
+
         public void Dispose() {
             // do nothing
         }
 
-        public Task Init(GpioController controller) => Task.Run(() => Console.Out.WriteLine($"{this.UniqueId} Motor initialized"));
+        public Task Initialize(GpioController controller) => Task.Run(() => Console.Out.WriteLine($"{this.UniqueId} Motor initialized"));
 
         public void TurnOff() => Console.Out.WriteLine($"{this.UniqueId} Motor off");
 

@@ -9,7 +9,7 @@ namespace EllieBot.Communications {
     public class NervousSystem {
         public IManagedMqttClient Client { get; set; }
 
-        public async Task ConnectAsync(string ipAddress, int port) {
+        public Task ConnectAsync(string ipAddress, int port) {
             string clientId = Guid.NewGuid().ToString();
 
             MqttClientOptionsBuilder messageBuilder = new MqttClientOptionsBuilder()
@@ -26,10 +26,10 @@ namespace EllieBot.Communications {
 
             this.Client = new MqttFactory().CreateManagedMqttClient();
 
-            await this.Client.StartAsync(managedOptions);
+            return this.Client.StartAsync(managedOptions);
         }
 
-        public Task PublishAsync(string topic, string payload, bool retainFlag = true, int qos = 1) {
+        public Task PublishAsync(string topic, string payload, bool retainFlag = false, int qos = 0) {
             return this.Client.PublishAsync(new MqttApplicationMessageBuilder()
                                          .WithTopic(topic)
                                          .WithPayload(payload)

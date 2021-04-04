@@ -9,13 +9,13 @@ namespace EllieBot.IO {
 
     internal class LedController : ILedController {
         private readonly Dictionary<string, IBlinkable> Blinkables;
-        private readonly MqttLogger Logger;
+        private readonly ILogger Logger;
         private bool disposedValue;
 
         public static LedController Instance { get; private set; }
         public GpioController Controller { get; private set; }
 
-        private LedController(IEnumerable<IBlinkable> blinkables, MqttLogger logger) {
+        private LedController(IEnumerable<IBlinkable> blinkables, ILogger logger) {
             this.Logger = logger;
             this.Blinkables = new Dictionary<string, IBlinkable>();
             if (blinkables == null) {
@@ -30,7 +30,7 @@ namespace EllieBot.IO {
             }
         }
 
-        public static LedController CreateInstance(GpioController controller, IEnumerable<IBlinkable> blinkables, MqttLogger logger) {
+        public static LedController CreateInstance(GpioController controller, IEnumerable<IBlinkable> blinkables, ILogger logger) {
             if (Instance != null) {
                 return Instance;
             }
@@ -45,7 +45,7 @@ namespace EllieBot.IO {
 
             List<Task> tasks = new List<Task>();
             foreach (IBlinkable device in this.Blinkables.Values) {
-                tasks.Add(device.Init(this.Controller));
+                tasks.Add(device.Initialize(this.Controller));
             }
             return Task.WhenAll(tasks.ToArray());
         }

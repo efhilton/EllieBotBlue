@@ -7,10 +7,10 @@ namespace EllieBot.IO.Devices {
 
     public class HBridgeMotor : IMotor {
         public static int PWM_PERIOD_IN_MS = 100;
-        public readonly MqttLogger Logger;
+        public readonly ILogger Logger;
         private bool disposedValue;
 
-        public HBridgeMotor(string uniqueId, int pinForward, int pinBackward, MqttLogger logger) {
+        public HBridgeMotor(string uniqueId, int pinForward, int pinBackward, ILogger logger) {
             this.UniqueId = uniqueId;
             this.ForwardPin = pinForward;
             this.BackwardPin = pinBackward;
@@ -22,10 +22,16 @@ namespace EllieBot.IO.Devices {
         public GpioController Controller { get; set; }
         public int ForwardPin { get; set; }
         public int InactivePin { get; set; }
-        public string UniqueId { get; set; }
         public int TargetDutyCycle { get; set; }
+        public string UniqueId { get; set; }
 
-        public Task Init(GpioController ctl) {
+        public void Dispose() {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public Task Initialize(GpioController ctl) {
             return Task.Run(() => {
                 this.TargetDutyCycle = 0;
 
@@ -80,12 +86,6 @@ namespace EllieBot.IO.Devices {
 
                 this.disposedValue = true;
             }
-        }
-
-        public void Dispose() {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            this.Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }
