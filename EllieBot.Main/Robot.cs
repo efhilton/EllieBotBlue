@@ -1,6 +1,7 @@
 ﻿using EllieBot.Brain;
 using EllieBot.Brain.Commands;
 using EllieBot.Configs;
+using EllieBot.Configs.Descriptions;
 using EllieBot.IO;
 using EllieBot.IO.Devices;
 using EllieBot.Logging;
@@ -35,14 +36,14 @@ namespace EllieBot {
         public Task Initialize() {
             this.CommandProcessor.Initialize();
             this.comms = new Communications.NervousSystem();
-            this.comms.ConnectAsync(this.Configuration.MqttDefinitions.Host, this.Configuration.MqttDefinitions.Port).Wait();
+            this.comms.ConnectAsync(this.Configuration.MqttConnectionDescription.Host, this.Configuration.MqttConnectionDescription.Port).Wait();
 
             this.Logger.LogMessageFcn = this.PublishLogAsync;
 
             Task t1 = RegisterHBridgeMotors(Logger, GpioController, Configuration, CommandProcessor);
-            Task t2 = RegisterLEDs(Logger, GpioController, Configuration, CommandProcessor);
-            Task t3 = this.RegisterUltrasonicSensors(Logger, GpioController, Configuration);
-            Task t4 = this.comms.SubscribeAsync(this.Configuration.MqttDefinitions.TopicForCommands,
+            Task t2 = RegisterOutputPins(Logger, GpioController, Configuration, CommandProcessor);
+            Task t3 = this.RegisterSensors(Logger, GpioController, Configuration);
+            Task t4 = this.comms.SubscribeAsync(this.Configuration.MqttConnectionDescription.TopicForCommands,
                                                 this.OnCommandReceived,
                                                 this.OnCommandConnection,
                                                 this.OnCommandDisconnection);
@@ -62,7 +63,7 @@ namespace EllieBot {
         public Task PublishCommandAsync(string message)
             => message is null
             ? throw new ArgumentNullException(message)
-            : this.comms.PublishAsync(this.Configuration.MqttDefinitions.TopicForCommands, message, false, 0);
+            : this.comms.PublishAsync(this.Configuration.MqttConnectionDescription.TopicForCommands, message, false, 0);
 
         public Task PublishLogAsync(Constants.LoggingLevel level, string message) {
             LoggingPdu pdu = new LoggingPdu {
@@ -70,13 +71,13 @@ namespace EllieBot {
                 Message = message.Trim()
             };
             string json = JsonConvert.SerializeObject(pdu);
-            return this.comms.PublishAsync(this.Configuration.MqttDefinitions.TopicForLogging, json, false, 0);
+            return this.comms.PublishAsync(this.Configuration.MqttConnectionDescription.TopicForLogging, json, false, 0);
         }
 
         public Task PublishDataAsync(string json) =>
              json is null
                 ? throw new ArgumentNullException(nameof(json))
-                : this.comms.PublishAsync(this.Configuration.MqttDefinitions.TopicForSensorData, json, false, 0);
+                : this.comms.PublishAsync(this.Configuration.MqttConnectionDescription.TopicForSensorData, json, false, 0);
 
         private Task OnCommandDisconnection(MqttClientDisconnectedEventArgs arg) => Task.Run(() => this.Logger.Info("Disconnected. Until next time!"));
 
@@ -96,27 +97,27 @@ namespace EllieBot {
 
         private static Task RegisterHBridgeMotors(ILogger logger, GpioController controller, RobotConfig configs, ICommandProcessor commandProcessor) {
             return Task.Run(() => {
-                if (configs.HBridgeMotorDefinitions != null && configs.HBridgeMotorDefinitions.Length > 0) {
+                if (configs.Actuators != null && configs.Actuators.HBridgeMotorDescriptions != null && configs.Actuators.HBridgeMotorDescriptions.Length > 0) {
                     List<IPWMDevice> motors = new List<IPWMDevice>();
-                    foreach (HBridgeMotorDescription h in configs.HBridgeMotorDefinitions) {
-                        IPWMDevice motor = new HBridgeMotor(h.UniqueId.ToLower(), h.ForwardPin, h.BackwardPin, logger);
+                    foreach (HBridgeMotorDescription h in configs.Actuators.HBridgeMotorDescriptions) {
+                        IPWMDevice motor = new HBridgeMotor(h.UniqueId.ToLower(), h.ForwardPinNumber, h.BackwardPinNumber, logger);
                         motors.Add(motor);
                     }
                     IPWMController pwmController = PwmController.CreateInstance(controller, motors, logger);
-                    commandProcessor.RegisterCommand(new DriveMotorControl(configs.DriveTrainDefinitions.LeftMotorUniqueId.ToLower(),
-                                                                           configs.DriveTrainDefinitions.RightMotorUniqueId.ToLower(),
+                    commandProcessor.RegisterCommand(new DriveMotorControl(configs.DriveTrainDescription.LeftMotorUniqueId.ToLower(),
+                                                                           configs.DriveTrainDescription.RightMotorUniqueId.ToLower(),
                                                                            pwmController));
                     commandProcessor.RegisterCommand(new SetHbridgePwmControl(pwmController));
                 }
             });
         }
 
-        private static Task RegisterLEDs(ILogger logger, GpioController controller, RobotConfig configs, ICommandProcessor commandProcessor) {
+        private static Task RegisterOutputPins(ILogger logger, GpioController controller, RobotConfig configs, ICommandProcessor commandProcessor) {
             return Task.Run(() => {
-                if (configs.LedDefinitions != null && configs.LedDefinitions.Length > 0) {
+                if (configs.Actuators != null && configs.Actuators.OutputPinDescriptions != null && configs.Actuators.OutputPinDescriptions.Length > 0) {
                     List<IBlinkable> leds = new List<IBlinkable>();
-                    foreach (LedDescription l in configs.LedDefinitions) {
-                        LED led = new LED(l.UniqueId.ToLower(), l.PinNumber, logger);
+                    foreach (OutputPinDescription l in configs.Actuators.OutputPinDescriptions) {
+                        LED led = new LED(l.UniqueId.ToLower(), l.OutputPinNumber, logger);
                         leds.Add(led);
                     }
                     ILedController ledController = LedController.CreateInstance(controller, leds, logger);
@@ -125,24 +126,51 @@ namespace EllieBot {
             });
         }
 
-        private Task RegisterUltrasonicSensors(ILogger logger, GpioController controller, RobotConfig configs) {
+        private Task RegisterSensors(ILogger logger, GpioController controller, RobotConfig configs) {
             return Task.Run(() => {
-                if (configs.Hcsr04sDescriptions != null && configs.Hcsr04sDescriptions.Length > 0) {
+                if (configs.Sensors != null) {
                     List<Task> sensors = new List<Task>();
-                    foreach (Hcsr04sDescription l in configs.Hcsr04sDescriptions) {
-                        IBlinkable triggerPin = new LED(l.UniqueId.ToLower() + ".trigger", l.TriggerPin, logger);
-                        ISensor<PinValue> echoPin = new InputPinTrigger(l.UniqueId.ToLower() + ".echo", l.EchoPin, logger);
-                        UltrasonicHCSR04 distanceSensor = new UltrasonicHCSR04(l.UniqueId.ToLower(), triggerPin, echoPin, logger);
+                    if (configs.Sensors.Hcsr04sDescriptions != null && configs.Sensors.Hcsr04sDescriptions.Length > 0) {
+                        foreach (Hcsr04sDescription l in configs.Sensors.Hcsr04sDescriptions) {
+                            IBlinkable triggerPin = new LED(l.UniqueId.ToLower() + ".trigger", l.TriggerPinNumber, logger);
+                            ISensor<PinValue> echoPin = new InputPinTrigger(l.UniqueId.ToLower() + ".echo", l.EchoPinNumber, logger);
+                            UltrasonicHCSR04 distanceSensor = new UltrasonicHCSR04(l.UniqueId.ToLower(), triggerPin, echoPin, logger);
 
-                        distanceSensor.OnData += this.OnSingleDoubleData;
-                        Task t = distanceSensor.Initialize(controller);
+                            distanceSensor.OnData += this.OnSingleDoubleData;
 
-                        sensors.Add(t);
+                            Task t = distanceSensor.Initialize(controller);
+
+                            sensors.Add(t);
+                        }
                     }
 
-                    Task.WhenAll(sensors.ToArray()).Wait();
+                    if (configs.Sensors.InputPinTriggerDescriptions != null && configs.Sensors.InputPinTriggerDescriptions.Length > 0) {
+                        foreach (InputPinTriggerDescription l in configs.Sensors.InputPinTriggerDescriptions) {
+                            ISensor<PinValue> inputPin = new InputPinTrigger(l.UniqueId.ToLower(), l.InputPinNumber, logger);
+
+                            inputPin.OnData += this.OnPinValueChanged;
+
+                            Task t = inputPin.Initialize(controller);
+
+                            sensors.Add(t);
+                        }
+                    }
+
+                    if (sensors.Count > 0) {
+                        Task.WhenAll(sensors.ToArray()).Wait();
+                    }
                 }
             });
+        }
+
+        private void OnPinValueChanged(string id, PinValue data) {
+            SensorDataPdu<bool> pdu = new SensorDataPdu<bool> {
+                UniqueId = id,
+                Data = new bool[] { data == PinValue.High }
+            };
+
+            string json = JsonConvert.SerializeObject(pdu);
+            this.PublishDataAsync(json).Wait();
         }
 
         private void OnSingleDoubleData(string id, double data)

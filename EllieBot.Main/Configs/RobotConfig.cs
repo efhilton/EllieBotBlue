@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using EllieBot.Configs.Descriptions;
+using Newtonsoft.Json;
 using System;
 using System.IO.Abstractions;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace EllieBot.Configs {
     public class RobotConfig {
         public string DebuggingLevel { get; set; } = LoggingLevel.INFO.ToString();
 
-        public MqttConnectionDescription MqttDefinitions { get; set; } = new MqttConnectionDescription {
+        public MqttConnectionDescription MqttConnectionDescription { get; set; } = new MqttConnectionDescription {
             Port = Mqtt.PORT,
             Host = Mqtt.HOST,
             TopicForCommands = Mqtt.TOPIC_FOR_COMMANDS,
@@ -18,38 +19,13 @@ namespace EllieBot.Configs {
             TopicForSensorData = Mqtt.TOPIC_FOR_SENSORS
         };
 
-        public DriveTrainDescription DriveTrainDefinitions { get; set; } = new DriveTrainDescription {
+        public DriveTrainDescription DriveTrainDescription { get; set; } = new DriveTrainDescription {
             LeftMotorUniqueId = ComponentIds.LEFT_MOTOR,
             RightMotorUniqueId = ComponentIds.RIGHT_MOTOR
         };
 
-        public HBridgeMotorDescription[] HBridgeMotorDefinitions { get; set; } = new HBridgeMotorDescription[] {
-            new HBridgeMotorDescription {
-                UniqueId = ComponentIds.LEFT_MOTOR,
-                ForwardPin = PinNums.MOTOR_FORWARD_LEFT,
-                BackwardPin = PinNums.MOTOR_BACKWARD_LEFT
-            },
-            new HBridgeMotorDescription {
-                UniqueId = ComponentIds.RIGHT_MOTOR,
-                ForwardPin = PinNums.MOTOR_FORWARD_RIGHT,
-                BackwardPin = PinNums.MOTOR_BACKWARD_LEFT
-            }
-        };
-
-        public LedDescription[] LedDefinitions { get; set; } = new LedDescription[] {
-            new LedDescription {
-                UniqueId = ComponentIds.YELLOW_LIGHT,
-                PinNumber = PinNums.YELLOW_LIGHT
-            },
-        };
-
-        public Hcsr04sDescription[] Hcsr04sDescriptions { get; set; } = new Hcsr04sDescription[] {
-            new Hcsr04sDescription {
-                UniqueId = ComponentIds.ULTRASONIC_HCSR04,
-                TriggerPin = PinNums.ULTRASONIC_HCSR04_TRIGGER,
-                EchoPin = PinNums.ULTRASONIC_HCSR04_ECHO
-            }
-        };
+        public Actuators Actuators { get; set; } = new Actuators();
+        public Sensors Sensors { get; set; } = new Sensors();
 
         internal static Task<RobotConfig> LoadFile(string fileName, IFileSystem fileSystem, Action<string> callback = null) {
             return Task.Run(() => {
@@ -57,7 +33,7 @@ namespace EllieBot.Configs {
                 string fullPath = fileSystem.Path.Combine(assyLoc, fileName);
                 if (!fileSystem.File.Exists(fullPath)) {
                     callback?.Invoke($"Saving new config file to {fullPath}");
-                    RobotConfig config = GetDefaultRobotConfig();
+                    RobotConfig config = new RobotConfig();
                     config.SaveFile(fullPath, fileSystem).Wait();
                     return config;
                 } else {
@@ -71,11 +47,6 @@ namespace EllieBot.Configs {
         internal Task SaveFile(string fileName, IFileSystem fileSystem) {
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
             return fileSystem.File.WriteAllTextAsync(fileName, json);
-        }
-
-        private static RobotConfig GetDefaultRobotConfig() {
-            RobotConfig config = new RobotConfig();
-            return config;
         }
     }
 }

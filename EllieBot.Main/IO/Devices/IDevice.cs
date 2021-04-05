@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 
 namespace EllieBot.IO.Devices {
 
-    public interface IDevice : IDisposable {
-        string UniqueId { get; }
+    public interface IDevice : IIdentifiable, IDisposable {
 
         Task Initialize(GpioController controller);
     }

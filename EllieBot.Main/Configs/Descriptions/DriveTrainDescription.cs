@@ -1,4 +1,4 @@
-﻿namespace EllieBot.Configs {
+﻿namespace EllieBot.Configs.Descriptions {
 
     public class DriveTrainDescription {
         public string LeftMotorUniqueId { get; set; }

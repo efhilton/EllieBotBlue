@@ -10,6 +10,8 @@
             internal const int YELLOW_LIGHT = 18;
             internal const int ULTRASONIC_HCSR04_TRIGGER = 4;
             internal const int ULTRASONIC_HCSR04_ECHO = 17;
+            internal const int BUTTON_RIGHT_COLLISION = 27;
+            internal const int BUTTON_LEFT_COLLISION = 22;
         }
 
         public static class Mqtt {
@@ -28,7 +30,9 @@
             internal const string LEFT_MOTOR = "com.efhilton.elliebot.id.motors.left";
             internal const string RIGHT_MOTOR = "com.efhilton.elliebot.id.motors.right";
             internal const string YELLOW_LIGHT = "com.efhilton.elliebot.id.leds.lightyellow";
-            internal const string ULTRASONIC_HCSR04 = "com.efhilton.elliebot.id.sensors.front.distance";
+            internal const string ULTRASONIC_HCSR04 = "com.efhilton.elliebot.id.sensors.front.range";
+            internal const string BUTTON_RIGHT_COLLISION = "com.efhilton.elliebot.id.sensors.front.right.collision";
+            internal const string BUTTON_LEFT_COLLISION = "com.efhilton.elliebot.id.sensors.front.left.collision";
         }
 
         public static class Commands {
