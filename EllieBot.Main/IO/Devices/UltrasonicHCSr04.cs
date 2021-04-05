@@ -38,8 +38,10 @@ public class UltrasonicHCSR04 : ISensor<double> {
     /// cm =  seconds * (340.0 m/s * 100.0 cm/m) / 2.0
     /// </summary>
     /// <returns>Distance to object, in centimeters.</returns>
-    private static double CalculateDistanceInCm(long timeOfFlightInTicks, double speedOfSoundInMetersPerSec = 340.0)
-        => timeOfFlightInTicks / Stopwatch.Frequency * speedOfSoundInMetersPerSec / 200.0;
+    public static double CalculateDistanceInCm(long timeOfFlightInTicks, double speedOfSoundInMetersPerSec = 340.0) {
+        double seconds = Convert.ToDouble(timeOfFlightInTicks) / Convert.ToDouble(Stopwatch.Frequency);
+        return 100.0 * seconds * speedOfSoundInMetersPerSec / 2.0;
+    }
 
     public void Dispose() {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -114,12 +116,13 @@ public class UltrasonicHCSR04 : ISensor<double> {
         if (value == PinValue.High) {
             RelativeTimeToRisingEdge = stopwatch.ElapsedTicks;
         } else {
-            this.TimeOfFlightTicks = stopwatch.ElapsedTicks - RelativeTimeToRisingEdge;
+            long timeEnd = stopwatch.ElapsedTicks;
+            this.TimeOfFlightTicks = timeEnd - RelativeTimeToRisingEdge;
             stopwatch.Stop();
 
             this.DistanceToObject = CalculateDistanceInCm(this.TimeOfFlightTicks);
             this.OnData?.Invoke(this.UniqueId, this.DistanceToObject);
-            this.logger.Debug($"In {this.UniqueId}: {TimeOfFlightTicks} at {stopwatch.ElapsedTicks} - {stopwatch.Elapsed} - {stopwatch.ElapsedMilliseconds}");
+            this.logger.Debug($"In {this.UniqueId}: tof={TimeOfFlightTicks} = {timeEnd}-{RelativeTimeToRisingEdge}");
         }
     }
 }
