@@ -65,12 +65,14 @@ public class UltrasonicHCSR04 : ISensor<double> {
             // at most, it would have taken 38ms, so if we
             // are still running, then something is wrong.
             stopwatch.Stop();
+            this.logger.Warn($"{this.UniqueId} Overrun!!");
         }
         this.Trigger().Wait(SWEEP_TIMEOUT_IN_MS);
     }
 
     public Task Trigger() {
         if (stopwatch != null && stopwatch.IsRunning) {
+            this.logger.Warn($"Detected {this.UniqueId} Overrun!!");
             return Task.FromResult(0);
         }
 
