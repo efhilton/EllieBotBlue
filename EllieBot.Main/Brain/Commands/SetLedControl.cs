@@ -1,4 +1,5 @@
 ﻿using EllieBot.IO;
+using EllieBot.NervousSystem;
 using System;
 
 namespace EllieBot.Brain.Commands {
@@ -10,7 +11,7 @@ namespace EllieBot.Brain.Commands {
 
         public string[] Commands => new string[] { Constants.Commands.Led.ON, Constants.Commands.Led.OFF };
 
-        public void Execute(CommandPacket command) {
+        public void Execute(CommandPdu command) {
             if (string.IsNullOrWhiteSpace(command.Command) || command.Arguments == null || command.Arguments.Length != 1) {
                 return;
             }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EllieBot.IO.Devices {
 
-    internal class InputPinTrigger : ITriggerable {
+    internal class InputPinTrigger : ISensor<PinValue> {
         private readonly ILogger Logger;
         private readonly int PinNumber;
         private bool disposedValue;
@@ -20,14 +20,14 @@ namespace EllieBot.IO.Devices {
             this.Logger = logger;
         }
 
-        public event OnChangeReceived OnChangeEvent;
-
         public string UniqueId { get; set; }
+
+        public event ISensor<PinValue>.OnDataReceived OnData;
 
         public void Dispose() {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             this.Dispose(disposing: true);
-            System.GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         public Task Initialize(GpioController controller) {
@@ -58,13 +58,13 @@ namespace EllieBot.IO.Devices {
 
         private void OnPinHigh(object sender, PinValueChangedEventArgs pinValueChangedEventArgs) {
             if (pinValueChangedEventArgs.PinNumber == this.PinNumber) {
-                this.OnChangeEvent?.Invoke(PinValue.High);
+                this.OnData?.Invoke(this.UniqueId, PinValue.High);
             }
         }
 
         private void OnPinLow(object sender, PinValueChangedEventArgs pinValueChangedEventArgs) {
             if (pinValueChangedEventArgs.PinNumber == this.PinNumber) {
-                this.OnChangeEvent?.Invoke(PinValue.Low);
+                this.OnData?.Invoke(this.UniqueId, PinValue.Low);
             }
         }
     }

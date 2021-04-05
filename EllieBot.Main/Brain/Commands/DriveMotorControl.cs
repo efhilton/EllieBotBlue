@@ -1,4 +1,5 @@
 ﻿using EllieBot.IO;
+using EllieBot.NervousSystem;
 using System;
 
 namespace EllieBot.Brain.Commands {
@@ -16,7 +17,7 @@ namespace EllieBot.Brain.Commands {
         public string[] Commands => new string[] { Constants.Commands.Go.LEFT, Constants.Commands.Go.RIGHT, Constants.Commands.Go.FORWARD, Constants.Commands.Go.BACKWARD, Constants.Commands.Go.STOP, Constants.Commands.Go.TANK };
         public IPWMController Motors { get; }
 
-        public void Execute(CommandPacket command) {
+        public void Execute(CommandPdu command) {
             if (command == null
                 || string.IsNullOrWhiteSpace(command.Command)
                 || command.Arguments == null) {

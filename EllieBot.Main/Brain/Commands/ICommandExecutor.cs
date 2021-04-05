@@ -1,8 +1,10 @@
-﻿namespace EllieBot.Brain {
+﻿using EllieBot.NervousSystem;
+
+namespace EllieBot.Brain {
 
     public interface ICommandExecutor {
         string[] Commands { get; }
 
-        void Execute(CommandPacket command);
+        void Execute(CommandPdu command);
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace EllieBot.Brain {
+﻿namespace EllieBot.NervousSystem {
 
-    public class CommandPacket {
+    public class CommandPdu {
         public string Command { get; set; }
         public string[] Arguments { get; set; }
     }

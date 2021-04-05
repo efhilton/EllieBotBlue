@@ -12,12 +12,10 @@ namespace EllieBot.Communications {
         public Task ConnectAsync(string ipAddress, int port) {
             string clientId = Guid.NewGuid().ToString();
 
-            MqttClientOptionsBuilder messageBuilder = new MqttClientOptionsBuilder()
+            IMqttClientOptions options = new MqttClientOptionsBuilder()
               .WithClientId(clientId)
               .WithTcpServer(ipAddress, port)
-              .WithCleanSession();
-
-            IMqttClientOptions options = messageBuilder.Build();
+              .WithCleanSession().Build();
 
             ManagedMqttClientOptions managedOptions = new ManagedMqttClientOptionsBuilder()
               .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))

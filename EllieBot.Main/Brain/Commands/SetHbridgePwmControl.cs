@@ -1,4 +1,5 @@
 ﻿using EllieBot.IO;
+using EllieBot.NervousSystem;
 
 namespace EllieBot.Brain.Commands {
 
@@ -9,7 +10,7 @@ namespace EllieBot.Brain.Commands {
 
         public SetHbridgePwmControl(IPWMController motorsController) => this.PwmController = motorsController;
 
-        public void Execute(CommandPacket command) {
+        public void Execute(CommandPdu command) {
             if (command == null || command.Arguments.Length != 2) {
                 return;
             }

@@ -1,10 +1,12 @@
-﻿namespace EllieBot.Brain {
+﻿using EllieBot.NervousSystem;
+
+namespace EllieBot.Brain {
 
     public interface ICommandProcessor {
 
         void RegisterCommand(ICommandExecutor executor);
 
-        void QueueExecute(CommandPacket cmd);
+        void QueueExecute(CommandPdu cmd);
 
         void Initialize();
     }

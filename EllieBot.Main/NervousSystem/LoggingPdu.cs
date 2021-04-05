@@ -1,4 +1,4 @@
-﻿namespace EllieBot.Logging {
+﻿namespace EllieBot.NervousSystem {
 
     public class LoggingPdu {
         public Constants.LoggingLevel Level { get; set; } = Constants.LoggingLevel.INFO;

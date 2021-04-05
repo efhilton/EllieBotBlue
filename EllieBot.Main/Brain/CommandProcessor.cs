@@ -1,4 +1,5 @@
 ﻿using EllieBot.Logging;
+using EllieBot.NervousSystem;
 using System;
 using System.Collections.Generic;
 
@@ -27,7 +28,7 @@ namespace EllieBot.Brain {
         public void Initialize() {
         }
 
-        public void QueueExecute(CommandPacket cmd) {
+        public void QueueExecute(CommandPdu cmd) {
             if (cmd == null || string.IsNullOrWhiteSpace(cmd.Command)) {
                 return;
             }

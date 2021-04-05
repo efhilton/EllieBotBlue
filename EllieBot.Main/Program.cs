@@ -22,7 +22,7 @@ namespace EllieBot {
             }
 
             IFileSystem fileSystem = new FileSystem();
-            RobotConfig configs = RobotConfig.LoadFile(Constants.Internal.CONFIG_FILE_NAME, fileSystem, m => logger.Info(m)).GetAwaiter().GetResult();
+            RobotConfig configs = RobotConfig.LoadFile(Internal.CONFIG_FILE_NAME, fileSystem, m => logger.Info(m)).GetAwaiter().GetResult();
 
             logger.MinLevel = CalculateLoggingLevelFromConfigs(configs, LoggingLevel.INFO);
             logger.Info($"Set logging level to {logger.MinLevel}");

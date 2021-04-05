@@ -11,42 +11,43 @@ namespace EllieBot.Configs {
         public string DebuggingLevel { get; set; } = LoggingLevel.INFO.ToString();
 
         public MqttConnectionDescription MqttDefinitions { get; set; } = new MqttConnectionDescription {
-            Port = Constants.Mqtt.PORT,
-            Host = Constants.Mqtt.HOST,
-            TopicForCommands = Constants.Mqtt.TOPIC_FOR_COMMANDS,
-            TopicForLogging = Constants.Mqtt.TOPIC_FOR_LOGGING
+            Port = Mqtt.PORT,
+            Host = Mqtt.HOST,
+            TopicForCommands = Mqtt.TOPIC_FOR_COMMANDS,
+            TopicForLogging = Mqtt.TOPIC_FOR_LOGGING,
+            TopicForSensorData = Mqtt.TOPIC_FOR_SENSORS
         };
 
         public DriveTrainDescription DriveTrainDefinitions { get; set; } = new DriveTrainDescription {
-            LeftMotorUniqueId = Constants.ComponentIds.LEFT_MOTOR,
-            RightMotorUniqueId = Constants.ComponentIds.RIGHT_MOTOR
+            LeftMotorUniqueId = ComponentIds.LEFT_MOTOR,
+            RightMotorUniqueId = ComponentIds.RIGHT_MOTOR
         };
 
         public HBridgeMotorDescription[] HBridgeMotorDefinitions { get; set; } = new HBridgeMotorDescription[] {
             new HBridgeMotorDescription {
-                UniqueId = Constants.ComponentIds.LEFT_MOTOR,
-                ForwardPin = Constants.PinNums.MOTOR_FORWARD_LEFT,
-                BackwardPin = Constants.PinNums.MOTOR_BACKWARD_LEFT
+                UniqueId = ComponentIds.LEFT_MOTOR,
+                ForwardPin = PinNums.MOTOR_FORWARD_LEFT,
+                BackwardPin = PinNums.MOTOR_BACKWARD_LEFT
             },
             new HBridgeMotorDescription {
-                UniqueId = Constants.ComponentIds.RIGHT_MOTOR,
-                ForwardPin = Constants.PinNums.MOTOR_FORWARD_RIGHT,
-                BackwardPin = Constants.PinNums.MOTOR_BACKWARD_LEFT
+                UniqueId = ComponentIds.RIGHT_MOTOR,
+                ForwardPin = PinNums.MOTOR_FORWARD_RIGHT,
+                BackwardPin = PinNums.MOTOR_BACKWARD_LEFT
             }
         };
 
         public LedDescription[] LedDefinitions { get; set; } = new LedDescription[] {
             new LedDescription {
-                UniqueId = Constants.ComponentIds.YELLOW_LIGHT,
-                PinNumber = Constants.PinNums.YELLOW_LIGHT
+                UniqueId = ComponentIds.YELLOW_LIGHT,
+                PinNumber = PinNums.YELLOW_LIGHT
             },
         };
 
         public Hcsr04sDescription[] Hcsr04sDescriptions { get; set; } = new Hcsr04sDescription[] {
             new Hcsr04sDescription {
-                UniqueId = Constants.ComponentIds.ULTRASONIC_HCSR04,
-                TriggerPin = Constants.PinNums.ULTRASONIC_HCSR04_TRIGGER,
-                EchoPin = Constants.PinNums.ULTRASONIC_HCSR04_ECHO
+                UniqueId = ComponentIds.ULTRASONIC_HCSR04,
+                TriggerPin = PinNums.ULTRASONIC_HCSR04_TRIGGER,
+                EchoPin = PinNums.ULTRASONIC_HCSR04_ECHO
             }
         };
 
