@@ -101,7 +101,7 @@ public class UltrasonicHCSR04 : ISensor<double> {
     private static Task BusyWaitMicroSeconds(Stopwatch stopwatch, long microseconds) {
         return Task.Run(() => {
             long initialTick = stopwatch.ElapsedTicks;
-            double desiredWaitTicks = Convert.ToDouble(microseconds) * Stopwatch.Frequency / 1_000_000.0;
+            double desiredWaitTicks = Convert.ToDouble(microseconds * Stopwatch.Frequency) / 1_000_000.0;
             double finalTick = initialTick + desiredWaitTicks;
             do { } while (stopwatch.ElapsedTicks < finalTick); // busy wait
         });
@@ -119,6 +119,7 @@ public class UltrasonicHCSR04 : ISensor<double> {
 
             this.DistanceToObject = CalculateDistanceInCm(this.TimeOfFlightTicks);
             this.OnData?.Invoke(this.UniqueId, this.DistanceToObject);
+            this.logger.Debug($"In {this.UniqueId}: {TimeOfFlightTicks} at {stopwatch.ElapsedTicks} - {stopwatch.Elapsed} - {stopwatch.ElapsedMilliseconds}");
         }
     }
 }

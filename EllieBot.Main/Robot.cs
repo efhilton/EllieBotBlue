@@ -141,6 +141,8 @@ namespace EllieBot {
                             Task t = distanceSensor.Initialize(controller);
 
                             sensors.Add(t);
+
+                            this.Logger.Info($"Registered Sensor: {l.UniqueId}");
                         }
                     }
 
@@ -153,6 +155,8 @@ namespace EllieBot {
                             Task t = inputPin.Initialize(controller);
 
                             sensors.Add(t);
+
+                            this.Logger.Info($"Registered Sensor: {l.UniqueId}");
                         }
                     }
 
