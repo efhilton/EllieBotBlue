@@ -38,8 +38,9 @@ public class UltrasonicHCSR04 : ISensor<double> {
     /// cm =  seconds * (340.0 m/s * 100.0 cm/m) / 2.0
     /// </summary>
     /// <returns>Distance to object, in centimeters.</returns>
-    public static double CalculateDistanceInCm(long timeOfFlightInTicks, double speedOfSoundInMetersPerSec = 343.0) {
-        double seconds = Convert.ToDouble(timeOfFlightInTicks) / Convert.ToDouble(Stopwatch.Frequency);
+    public static double CalculateDistanceInCm(long timeOfFlightInTicks, double speedOfSoundInMetersPerSec = 343.0, long? frequency = null) {
+        double seconds = Convert.ToDouble(timeOfFlightInTicks) / Convert.ToDouble(frequency ?? Stopwatch.Frequency);
+
         return 100.0 * seconds * speedOfSoundInMetersPerSec / 2.0;
     }
 
