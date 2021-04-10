@@ -2,6 +2,7 @@
 using static EllieBot.Constants;
 
 namespace EllieBot.Configs {
+
     public class Actuators {
 
         public HBridgeMotorDescription[] HBridgeMotorDescriptions { get; set; } = new HBridgeMotorDescription[] {
@@ -13,7 +14,7 @@ namespace EllieBot.Configs {
             new HBridgeMotorDescription {
                 UniqueId = ComponentIds.RIGHT_MOTOR,
                 ForwardPinNumber = PinNums.MOTOR_FORWARD_RIGHT,
-                BackwardPinNumber = PinNums.MOTOR_BACKWARD_LEFT
+                BackwardPinNumber = PinNums.MOTOR_BACKWARD_RIGHT
             }
         };
 
