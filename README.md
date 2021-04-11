@@ -343,3 +343,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 In other words, use this software at your own risk. 
 
+I am not affiliated in any way with The Pi Hut, its affiliates, or affilliates of ITS affiliates.
+
