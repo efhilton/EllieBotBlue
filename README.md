@@ -1,7 +1,9 @@
 # EllieBotBlue
 This project was built on a [CamJam EduKit 3](https://thepihut.com/collections/camjam-edukit/products/camjam-edukit-3-robotics) though it should work on most any Raspberry Pi robots.  
 
-This code gives a robotics engineer the ability to communicate with a remote application via an [MQTT](https://mqtt.org/) broker.  
+This code gives a robotics engineer the ability to communicate with their robot via an [MQTT](https://mqtt.org/) broker. In doing so:
+- any MQTT capable language can be used to add modules/intelligence to this robot (modules can be either local or remote)
+- any MQTT capable language running on a remote machine can be used to command, listen to sensor signals, and/or listen to logging information. 
 
 ## Introduction
 This project allows the control of any Raspberry Pi robot (for example one built from a [CamJam EduKti 3](https://thepihut.com/collections/camjam-edukit/products/camjam-edukit-3-robotics), no affiliation) through an [MQTT](https://mqtt.org/) message broker. It has been written in C# for performance reasons, though from the design architecture, it should be able to be extended by use of any programming language that understands [MQTT](https://mqtt.org/).
