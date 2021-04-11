@@ -12,7 +12,7 @@ This project was created so that I can teach kids how to program.  The idea is t
 - Receive logging information from their robot
 - Receive sensor signals from the robot
 
-And although this project originally was conceived for either [MIT App Inventor](https://appinventor.mit.edu/) and [Thunkable](https://thunkable.com/#/), by its architecture, any other programming language with an appropriate [MQTT](https://mqtt.org/) library can be used.
+And although this project originally was conceived for either [MIT App Inventor](https://appinventor.mit.edu/) and [Thunkable](https://thunkable.com/#/), by its architecture, any other programming language with an appropriate [MQTT](https://mqtt.org/) library can be used to both/either add modules and/or communicate with the robot.
 
 ## Setting Up Your Robot
 
